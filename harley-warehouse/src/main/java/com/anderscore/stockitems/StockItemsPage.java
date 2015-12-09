@@ -1,7 +1,7 @@
 package com.anderscore.stockitems;
 
-import com.anderscore.StockItem;
 import com.anderscore.authenticate.AuthenticatedPage;
+import com.anderscore.model.StockItem;
 import com.googlecode.wicket.jquery.ui.form.button.Button;
 import com.googlecode.wicket.jquery.ui.markup.html.link.AjaxLink;
 import com.googlecode.wicket.jquery.ui.markup.html.link.Link;
