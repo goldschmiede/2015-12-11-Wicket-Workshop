@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
@@ -19,8 +18,6 @@ import com.anderscore.authenticate.AuthenticatedPage;
 import com.anderscore.model.StockItem;
 import com.googlecode.wicket.jquery.ui.form.button.Button;
 import com.googlecode.wicket.jquery.ui.markup.html.link.AjaxLink;
-
-import de.agilecoders.wicket.extensions.markup.html.bootstrap.form.validation.SimpleMessageValidation;
 
 /**
  * Created by pmoebius on 07.12.2015.
@@ -40,23 +37,31 @@ public class StockItemsPage extends AuthenticatedPage {
             new StockItem(37509L, "Ignition XXX", 0, "B", DateTime.now(), "A0"))
     );
 
+    private StockItemModal modal;
+
     @SuppressWarnings("serial")
 	public StockItemsPage(final PageParameters parameters) {
         super(parameters);
 
-        final SimpleMessageValidation validation = new SimpleMessageValidation();
+        modal = new StockItemModal("modal");
+        // Dummy...
+        final StockItemPanel stockItemPanel = new StockItemPanel("content", new StockItem(1L, "name", 1, "A", DateTime.now(), "1"));
+        modal.setContent(stockItemPanel);
+        /*        final SimpleMessageValidation validation = new SimpleMessageValidation();
         validation.getConfig().appendToParent(true);
         add(validation);
 
         final ModalWindow modal;
-        add(modal = new ModalWindow("modalWindow"));
+        add(modal = new ModalWindow("modalWindow"));*/
+        
+        add(modal);
         
 
         
 
         add(new ListView<StockItem>("stockItems", new ListModel<StockItem>(stockItems)) {
             @Override
-            protected void populateItem(ListItem<StockItem> item) {
+            protected void populateItem(final ListItem<StockItem> item) {
                 item.add(new Label("id", new PropertyModel(item.getModelObject(), "id")));
                 item.add(new Label("name", new PropertyModel(item.getModelObject(), "name")));
                 item.add(new Label("quantity", new PropertyModel(item.getModelObject(), "quantity")));
@@ -65,6 +70,7 @@ public class StockItemsPage extends AuthenticatedPage {
                 item.add(new Label("batch", new PropertyModel(item.getModelObject(), "batch")));
 
                 final StockItem stockItem = item.getModelObject();
+                final StockItemPanel modalContent = newStockItemPanel("content", stockItem);
 
                 //final ModalWindow modalWindow = new ModalWindow("modalWindow");
                 //Label label = new Label(modalWindow.getContentId(), "I'm a modal window!");
@@ -74,10 +80,15 @@ public class StockItemsPage extends AuthenticatedPage {
                     @Override
                     public void onClick(AjaxRequestTarget target)
                     {
-                        modal.setContent(new StockItemModal(modal.getContentId(), stockItem));
+                        //TODO: change modal content with method
+                        stockItemPanel.updateStockItemPanel(stockItem);
+                        modal.setContent(stockItemPanel);
+                        //modal.show(target);
+
+                        /*modal.setContent(new StockItemPanel(modal.getContentId(), stockItem));
                         modal.setTitle("Edit stock item");
 
-                        modal.show(target);
+                        modal.show(target);*/
                     }
                 });
 
@@ -118,5 +129,14 @@ public class StockItemsPage extends AuthenticatedPage {
 
 		add(link);
 	}
+    protected StockItemPanel newStockItemPanel(String wicketId, StockItem stockItem) {
+        return new StockItemPanel(wicketId, stockItem) {
+            @Override
+            protected void onSubmit(AjaxRequestTarget target) {
+                super.onSubmit(target);
+                modal.close(target);
+            }
+        };
+    }
 
 }
