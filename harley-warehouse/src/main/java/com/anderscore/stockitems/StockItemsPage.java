@@ -1,32 +1,47 @@
 package com.anderscore.stockitems;
 
-import com.anderscore.authenticate.AuthenticatedPage;
-import com.anderscore.model.StockItem;
-import com.googlecode.wicket.jquery.ui.form.button.Button;
-import com.googlecode.wicket.jquery.ui.markup.html.link.AjaxLink;
-import com.googlecode.wicket.jquery.ui.markup.html.link.Link;
-import de.agilecoders.wicket.core.markup.html.bootstrap.button.BootstrapLink;
-import de.agilecoders.wicket.extensions.markup.html.bootstrap.form.validation.SimpleMessageValidation;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
-import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.util.ListModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.joda.time.DateTime;
 
-import java.util.Arrays;
-import java.util.List;
+import com.anderscore.authenticate.AuthenticatedPage;
+import com.anderscore.model.StockItem;
+import com.googlecode.wicket.jquery.ui.form.button.Button;
+import com.googlecode.wicket.jquery.ui.markup.html.link.AjaxLink;
+
+import de.agilecoders.wicket.extensions.markup.html.bootstrap.form.validation.SimpleMessageValidation;
 
 /**
  * Created by pmoebius on 07.12.2015.
  */
 public class StockItemsPage extends AuthenticatedPage {
+	
+	//Long id, String name, Integer quantity, String storageArea, DateTime productionDate, String chargeNumber
+    public static final List<StockItem> stockItems = new ArrayList<StockItem>(Arrays.asList(
+            new StockItem(12311L, "Lighting HF500", 3, "A", DateTime.now(), "C1"),
+            new StockItem(35323L, "Lighting AC200", 5, "A", DateTime.now(), "C44"),
+            new StockItem(13245L, "Lighting FG", 1, "A", DateTime.now(), "C24"),
+            new StockItem(21431L, "Lighting AC201", 0, "A", DateTime.now(), "C2"),
+            new StockItem(99999L, "Lighting UL55", 10, "A", DateTime.now(), "CA4"),
 
-    public StockItemsPage(final PageParameters parameters) {
+            new StockItem(52499L, "Ignition QuickStart 55", 9, "B", DateTime.now(), "C66"),
+            new StockItem(12509L, "Ignition FlameBoost", 2, "B", DateTime.now(), "C90"),
+            new StockItem(37509L, "Ignition XXX", 0, "B", DateTime.now(), "A0"))
+    );
+
+    @SuppressWarnings("serial")
+	public StockItemsPage(final PageParameters parameters) {
         super(parameters);
 
         final SimpleMessageValidation validation = new SimpleMessageValidation();
@@ -35,19 +50,9 @@ public class StockItemsPage extends AuthenticatedPage {
 
         final ModalWindow modal;
         add(modal = new ModalWindow("modalWindow"));
+        
 
-        //Long id, String name, Integer quantity, String storageArea, DateTime productionDate, String chargeNumber
-        final List<StockItem> stockItems = Arrays.asList(
-                new StockItem(12311L, "Lighting HF500", 3, "A", DateTime.now(), "C1"),
-                new StockItem(35323L, "Lighting AC200", 5, "A", DateTime.now(), "C44"),
-                new StockItem(13245L, "Lighting FG", 1, "A", DateTime.now(), "C24"),
-                new StockItem(21431L, "Lighting AC201", 0, "A", DateTime.now(), "C2"),
-                new StockItem(99999L, "Lighting UL55", 10, "A", DateTime.now(), "CA4"),
-
-                new StockItem(52499L, "Ignition QuickStart 55", 9, "B", DateTime.now(), "C66"),
-                new StockItem(12509L, "Ignition FlameBoost", 2, "B", DateTime.now(), "C90"),
-                new StockItem(37509L, "Ignition XXX", 0, "B", DateTime.now(), "A0")
-        );
+        
 
         add(new ListView<StockItem>("stockItems", new ListModel<StockItem>(stockItems)) {
             @Override
@@ -89,14 +94,29 @@ public class StockItemsPage extends AuthenticatedPage {
         });
 
 
-        add(new Button("newButton") {
+		// add(new AjaxLink("newButton"){
+		// @Override
+		// public void onClick(AjaxRequestTarget target)
+		// {
+		// modal.setContent(new AddStockItemModal(modal.getContentId(),
+		// stockItems));
+		// modal.setTitle("Add new stock item");
+		// modal.showUnloadConfirmation(false);
+		//
+		// modal.show(target);
+		//
+		// }
+		// });
 
-            @Override
-            public void onSubmit() {
-                super.onSubmit();
-            }
-        });
-    }
+		Link link = new Link("addButton") {
+			@Override
 
+			public void onClick() {
+				setResponsePage(new AddStockItemPage("", stockItems));
+			}
+		};
 
-    }
+		add(link);
+	}
+
+}

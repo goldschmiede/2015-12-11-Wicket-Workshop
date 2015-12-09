@@ -1,8 +1,9 @@
 package com.anderscore.model;
 
-import org.joda.time.DateTime;
-
 import java.io.Serializable;
+import java.util.Random;
+
+import org.joda.time.DateTime;
 
 /**
  * Created by pmoebius on 07.12.2015.
@@ -15,6 +16,13 @@ public class StockItem implements Serializable {
     private DateTime productionDate;
     private String batch;
 
+    /**
+     * default constructor for creating a new stockitem with generated id and default values
+     */
+    public StockItem() {
+        this(new Random().nextLong(), "", 1, "", DateTime.now(), "");
+    }
+    
     public StockItem(Long id, String name, Integer quantity, String storageArea, DateTime productionDate, String batch) {
         this.id = id;
         this.name = name;

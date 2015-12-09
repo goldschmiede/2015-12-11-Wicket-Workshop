@@ -14,6 +14,10 @@ import org.apache.wicket.request.mapper.parameter.PageParameters;
  * Created by pmoebius on 07.12.2015.
  */
 public class AuthenticatedPage extends WebPage {
+	
+	public AuthenticatedPage() {
+		super();
+	}
 
     public AuthenticatedPage(final PageParameters parameters) {
         super(parameters);

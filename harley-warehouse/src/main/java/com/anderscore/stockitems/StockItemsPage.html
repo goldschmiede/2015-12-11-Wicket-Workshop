@@ -6,6 +6,11 @@
 <!-- Content in extend is already in a div.container -->
 <wicket:extend>
     <!-- Table -->
+    <button class="btn  btn-primary" wicket:id="addButton" data-toggle="modal" data-target="#myModal">
+        	<i class="glyphicon glyphicon-plus"></i>Add item
+    </button>
+    <br/>
+    <br/>
     <table class="table table-striped">
         <tr>
             <th>ID</th>
@@ -29,7 +34,7 @@
                 <button class="btn btn-default" wicket:id="deleteButton" value="Delete"><i class="glyphicon glyphicon-trash"></i></button>
             </td>
         </tr>
-        <button class="btn btn-default" wicket:id="newButton" data-toggle="modal" data-target="#myModal"><i class="glyphicon glyphicon-user"></i></button>
+       
     </table>
 
     <div wicket:id="modalWindow"></div>
