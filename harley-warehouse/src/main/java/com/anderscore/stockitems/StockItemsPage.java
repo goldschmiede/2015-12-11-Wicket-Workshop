@@ -65,7 +65,7 @@ public class StockItemsPage extends AuthenticatedPage {
                 //Label label = new Label(modalWindow.getContentId(), "I'm a modal window!");
 
                 //Scheinbar egal, welchen Button (wicket vs jquery), da Bootstrap greift.
-                item.add(new AjaxLink("newButton"){
+                item.add(new AjaxLink("editButton"){
                     @Override
                     public void onClick(AjaxRequestTarget target)
                     {
@@ -76,13 +76,7 @@ public class StockItemsPage extends AuthenticatedPage {
                     }
                 });
 
-                item.add(new Button("editButton") {
 
-                    @Override
-                    public void onSubmit() {
-                        super.onSubmit();
-                    }
-                });
                 item.add(new Button("deleteButton") {
 
                     @Override
@@ -91,6 +85,15 @@ public class StockItemsPage extends AuthenticatedPage {
                         setResponsePage(StockItemsPage.class);
                     }
                 });
+            }
+        });
+
+
+        add(new Button("newButton") {
+
+            @Override
+            public void onSubmit() {
+                super.onSubmit();
             }
         });
     }
