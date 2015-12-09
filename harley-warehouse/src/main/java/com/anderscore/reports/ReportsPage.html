@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:wicket="http://www.w3.org/1999/xlink">
+<head>
+</head>
+<body>
+<!-- Content in extend is already in a div.container -->
+<wicket:extend>
+    <div class="center">
+        <h2>Countries of the world</h2>
+    </div>
+    <table class="table table-hover">
+        <tr>
+            <th>ISO 3166-1</th>
+            <th>Name</th>
+            <th>Long name</th>
+            <th>Capital</th>
+            <th>Population</th>
+        </tr>
+        <tr wicket:id="rows">
+            <td wicket:id="dataRow"></td>
+        </tr>
+    </table>
+    <div class="text-center">
+        <ul class="pagination" wicket:id="pagingNavigator"></ul>
+    </div>
+</wicket:extend>
+</body>
+</html>
