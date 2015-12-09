@@ -1,5 +1,6 @@
 package com.anderscore;
 
+import com.anderscore.authenticate.AuthenticatedPage;
 import com.anderscore.authenticate.BasicAuthenticationSession;
 import com.anderscore.authenticate.SignInPage;
 import com.anderscore.homepage.HomePage;
@@ -22,7 +23,7 @@ public class WarehouseApplication extends AuthenticatedWebApplication
 	@Override
 	public Class<? extends WebPage> getHomePage()
 	{
-		return HomePage.class;
+		return AuthenticatedPage.class;
 	}
 
 	/**
