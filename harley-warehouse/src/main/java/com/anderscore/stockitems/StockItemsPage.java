@@ -1,7 +1,7 @@
 package com.anderscore.stockitems;
 
-import com.anderscore.StockItem;
 import com.anderscore.authenticate.AuthenticatedPage;
+import com.anderscore.model.StockItem;
 import com.googlecode.wicket.jquery.ui.form.button.Button;
 import com.googlecode.wicket.jquery.ui.markup.html.link.AjaxLink;
 import com.googlecode.wicket.jquery.ui.markup.html.link.Link;
@@ -65,24 +65,20 @@ public class StockItemsPage extends AuthenticatedPage {
                 //Label label = new Label(modalWindow.getContentId(), "I'm a modal window!");
 
                 //Scheinbar egal, welchen Button (wicket vs jquery), da Bootstrap greift.
-                item.add(new AjaxLink("newButton"){
-                    @Override
-                    public void onClick(AjaxRequestTarget target)
-                    {
-                        modal.setContent(new StockItemModal(modal.getContentId(), stockItem));
-                        modal.setTitle("Edit stock item");
-
-                        modal.show(target);
-                    }
+            
+                
+                item.add(new AjaxLink("editButton"){
+                	@Override
+                	public void onClick(AjaxRequestTarget target)
+                	{
+                		modal.setContent(new StockItemModal(modal.getContentId(), stockItem));
+                		modal.setTitle("Edit stock item");
+                		
+                		modal.show(target);
+                	}
                 });
 
-                item.add(new Button("editButton") {
-
-                    @Override
-                    public void onSubmit() {
-                        super.onSubmit();
-                    }
-                });
+           
                 item.add(new Button("deleteButton") {
 
                     @Override

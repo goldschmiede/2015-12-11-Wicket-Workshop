@@ -1,6 +1,5 @@
 package com.anderscore.stockitems;
 
-import com.anderscore.StockItem;
 import de.agilecoders.wicket.core.markup.html.bootstrap.tabs.BootstrapTabbedPanel;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
@@ -8,6 +7,8 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
+
+import com.anderscore.model.StockItem;
 
 /**
  * Created by dkraemer on 08.12.15.
