@@ -1,23 +1,19 @@
 package com.anderscore.stockitems;
 
 import de.agilecoders.wicket.core.markup.html.bootstrap.form.BootstrapForm;
-import de.agilecoders.wicket.core.markup.html.bootstrap.tabs.BootstrapTabbedPanel;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormSubmitBehavior;
-import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.Model;
 
 import com.anderscore.model.StockItem;
 
 /**
  * Created by dkraemer on 08.12.15.
  */
-public class EditStockItemPanel extends Panel {
+public class StockItemPanel extends Panel {
 
 
     private EditStockItemForm form;
@@ -25,7 +21,7 @@ public class EditStockItemPanel extends Panel {
     /**
      * @param id
      */
-    public EditStockItemPanel(String id, StockItem stockItem)
+    public StockItemPanel(String id, final StockItem stockItem, final StockItemFormStrategy strategy)
     {
         super(id);
 
@@ -43,8 +39,9 @@ public class EditStockItemPanel extends Panel {
 
             @Override
             protected void onSubmit(AjaxRequestTarget target) {
-                target.add(form);
-                EditStockItemPanel.this.onSubmit(target);
+                strategy.onSubmit(form.getStockItem());
+                //target.add(form);
+                StockItemPanel.this.onSubmit(target);
             }
         });
     }
@@ -54,7 +51,7 @@ public class EditStockItemPanel extends Panel {
     }
 
     public void updateStockItemForm(StockItem stockItem) {
-        form.update(stockItem);
+        form.setStockItem(stockItem);
     }
 
     static public final class EditStockItemForm extends BootstrapForm<StockItem>
@@ -77,8 +74,12 @@ public class EditStockItemPanel extends Panel {
         {
         }
 
-        public void update(StockItem stockItem){
+        public void setStockItem(StockItem stockItem){
             getModel().setObject(stockItem);
+        }
+
+        public StockItem getStockItem(){
+            return getModel().getObject();
         }
     }
 }
