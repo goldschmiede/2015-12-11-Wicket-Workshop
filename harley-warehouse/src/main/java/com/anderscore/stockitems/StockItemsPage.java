@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
@@ -37,21 +38,17 @@ public class StockItemsPage extends AuthenticatedPage {
             new StockItem(37509L, "Ignition XXX", 0, "B", DateTime.now(), "A0"))
     );
 
+    private final WebMarkupContainer stockItemsTable;
+    private final ListView listView;
+
     private final StockItemModal modal;
 
     @SuppressWarnings("serial")
 	public StockItemsPage(final PageParameters parameters) {
         super(parameters);
 
-        add (this.modal = new StockItemModal("modal"));
-        /*        final SimpleMessageValidation validation = new SimpleMessageValidation();
-        validation.getConfig().appendToParent(true);
-        add(validation);
-
-        final ModalWindow modal;
-        add(modal = new ModalWindow("modalWindow"));*/
-
-        add(new ListView<StockItem>("stockItems", new ListModel<StockItem>(stockItems)) {
+        this.stockItemsTable = new WebMarkupContainer("stockItemsTable");
+        this.listView = new ListView<StockItem>("stockItems", new ListModel<StockItem>(stockItems)) {
             @Override
             protected void populateItem(final ListItem<StockItem> item) {
                 item.add(new Label("id", new PropertyModel(item.getModelObject(), "id")));
@@ -81,17 +78,28 @@ public class StockItemsPage extends AuthenticatedPage {
                     }
                 });
 
-
-                item.add(new Button("deleteButton") {
+                item.add(new AjaxLink("deleteButton") {
 
                     @Override
-                    public void onSubmit() {
+                    public void onClick(AjaxRequestTarget target) {
                         stockItems.remove(stockItem);
-                        setResponsePage(StockItemsPage.class);
+                        target.add(stockItemsTable);
                     }
                 });
             }
-        });
+        };
+        this.stockItemsTable.setOutputMarkupId(true);
+        this.stockItemsTable.add(listView);
+
+        add(stockItemsTable);
+        add(this.modal = new StockItemModal("modal"));
+
+        /*        final SimpleMessageValidation validation = new SimpleMessageValidation();
+        validation.getConfig().appendToParent(true);
+        add(validation);
+
+        final ModalWindow modal;
+        add(modal = new ModalWindow("modalWindow"));*/
 
 
 		// add(new AjaxLink("newButton"){
