@@ -18,7 +18,7 @@ public class StockItemModal extends Modal<StockItem> {
     }
 
     public StockItemModal(String id, StockItemFormStrategy strategy, MarkupContainer table) {
-        this(id, new StockItem(1L, "Dummy", 1, "A", DateTime.now(), "1"), strategy, table);
+        this(id, new StockItem(), strategy, table);
     }
 
     public void updateContent(StockItem stockItem) {

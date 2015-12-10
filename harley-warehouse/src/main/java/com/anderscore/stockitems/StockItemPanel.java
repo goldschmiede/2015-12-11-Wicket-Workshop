@@ -1,7 +1,5 @@
 package com.anderscore.stockitems;
 
-import com.googlecode.wicket.jquery.ui.markup.html.link.AjaxLink;
-import de.agilecoders.wicket.core.markup.html.bootstrap.form.BootstrapForm;
 import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormSubmitBehavior;
@@ -13,6 +11,10 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 
 import com.anderscore.model.StockItem;
+import com.googlecode.wicket.jquery.core.Options;
+import com.googlecode.wicket.jquery.ui.form.datepicker.DatePicker;
+
+import de.agilecoders.wicket.core.markup.html.bootstrap.form.BootstrapForm;
 
 /**
  * Created by dkraemer on 08.12.15.
@@ -74,6 +76,10 @@ public class StockItemPanel extends Panel {
             add(new TextField<>("quantity"));
             add(new TextField<>("storageArea"));
             //add(new TextField<>("productionDate"));
+         // Date Picker //
+            DatePicker datePicker = new DatePicker("productionDate", new Options("dateFormat", Options.asString("dd.mm.yy")));
+            datePicker.setRequired(true);
+    		add(datePicker);
             add(new TextField<>("batch"));
             add(new AjaxSubmitLink("submitButton"){
                 @Override

@@ -1,6 +1,7 @@
 package com.anderscore.model;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Random;
 
 import org.joda.time.DateTime;
@@ -13,17 +14,17 @@ public class StockItem implements Serializable {
     private Integer quantity;
     private String storageArea;
     private Long id;
-    private DateTime productionDate;
+    private Date productionDate;
     private String batch;
 
     /**
      * default constructor for creating a new stockitem with generated id and default values
      */
     public StockItem() {
-        this(new Random().nextLong(), "", 1, "", DateTime.now(), "");
+        this(Long.valueOf(new Random().nextInt(9999)), "", 1, "", new Date(), "");
     }
     
-    public StockItem(Long id, String name, Integer quantity, String storageArea, DateTime productionDate, String batch) {
+    public StockItem(Long id, String name, Integer quantity, String storageArea, Date productionDate, String batch) {
         this.id = id;
         this.name = name;
         this.quantity = quantity;
@@ -56,11 +57,11 @@ public class StockItem implements Serializable {
         this.id = id;
     }
 
-    public DateTime getProductionDate() {
+    public Date getProductionDate() {
         return productionDate;
     }
 
-    public void setProductionDate(DateTime productionDate) {
+    public void setProductionDate(Date productionDate) {
         this.productionDate = productionDate;
     }
 

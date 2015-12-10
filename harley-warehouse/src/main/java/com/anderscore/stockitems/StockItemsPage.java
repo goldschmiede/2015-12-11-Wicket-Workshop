@@ -2,6 +2,7 @@ package com.anderscore.stockitems;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -12,7 +13,6 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.util.ListModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
-import org.joda.time.DateTime;
 
 import com.anderscore.authenticate.AuthenticatedPage;
 import com.anderscore.model.StockItem;
@@ -27,15 +27,15 @@ public class StockItemsPage extends AuthenticatedPage {
 
 	//Long id, String name, Integer quantity, String storageArea, DateTime productionDate, String chargeNumber
     public static final List<StockItem> stockItems = new ArrayList<StockItem>(Arrays.asList(
-            new StockItem(12311L, "Lighting HF500", 3, "A", DateTime.now(), "C1"),
-            new StockItem(35323L, "Lighting AC200", 5, "A", DateTime.now(), "C44"),
-            new StockItem(13245L, "Lighting FG", 1, "A", DateTime.now(), "C24"),
-            new StockItem(21431L, "Lighting AC201", 0, "A", DateTime.now(), "C2"),
-            new StockItem(99999L, "Lighting UL55", 10, "A", DateTime.now(), "CA4"),
+            new StockItem(12311L, "Lighting HF500", 3, "A", new Date(), "C1"),
+            new StockItem(35323L, "Lighting AC200", 5, "A", new Date(), "C44"),
+            new StockItem(13245L, "Lighting FG", 1, "A", new Date(), "C24"),
+            new StockItem(21431L, "Lighting AC201", 0, "A", new Date(), "C2"),
+            new StockItem(99999L, "Lighting UL55", 10, "A", new Date(), "CA4"),
 
-            new StockItem(52499L, "Ignition QuickStart 55", 9, "B", DateTime.now(), "C66"),
-            new StockItem(12509L, "Ignition FlameBoost", 2, "B", DateTime.now(), "C90"),
-            new StockItem(37509L, "Ignition XXX", 0, "B", DateTime.now(), "A0"))
+            new StockItem(52499L, "Ignition QuickStart 55", 9, "B", new Date(), "C66"),
+            new StockItem(12509L, "Ignition FlameBoost", 2, "B", new Date(), "C90"),
+            new StockItem(37509L, "Ignition XXX", 0, "B", new Date(), "A0"))
     );
 
     private final WebMarkupContainer stockItemsTable;
