@@ -69,7 +69,7 @@ public class StockItemPanel extends Panel {
         {
             super(id, new CompoundPropertyModel<>(stockItem));
             
-            add(new TextField<>("id"));
+            add(new TextField<>("id").setEnabled(false));
             add(new TextField<>("name"));
             add(new TextField<>("quantity"));
             add(new TextField<>("storageArea"));
@@ -92,5 +92,7 @@ public class StockItemPanel extends Panel {
         public StockItem getStockItem(){
             return getModel().getObject();
         }
+        
+        
     }
 }
