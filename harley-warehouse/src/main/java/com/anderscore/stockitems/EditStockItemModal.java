@@ -9,11 +9,11 @@ import org.joda.time.DateTime;
  */
 public class EditStockItemModal extends Modal<StockItem> {
 
-    private EditStockItemPanel modalPanel;
+    private AddStockItemPanel modalPanel;
 
     public EditStockItemModal(String id, StockItem stockItem) {
         super(id);
-        add(this.modalPanel = new EditStockItemPanel("content", stockItem));
+        add(this.modalPanel = new AddStockItemPanel("content", stockItem));
     }
 
     public EditStockItemModal(String id) {
