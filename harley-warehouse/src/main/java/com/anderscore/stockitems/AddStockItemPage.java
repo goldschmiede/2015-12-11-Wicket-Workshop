@@ -2,7 +2,7 @@ package com.anderscore.stockitems;
 
 import java.util.List;
 
-import org.apache.wicket.extensions.markup.html.form.DateTextField;
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -17,12 +17,15 @@ import com.anderscore.model.StockItem;
 public class AddStockItemPage extends AuthenticatedPage {
 
 	private static final long serialVersionUID = 6884760133844113941L;
+	private ModalWindow parent;
 
-    public AddStockItemPage(String id, List<StockItem> stockItems)
+    public AddStockItemPage(ModalWindow parent, List<StockItem> stockItems)
     {  
+    	this.parent = parent;
         add(new FeedbackPanel("feedback"));
         StockItem stockItem = new StockItem();
         add(new AddStockItemForm("addStockItemForm", stockItem, stockItems));
+        
     }
 
     class AddStockItemForm extends Form<StockItem>
@@ -48,6 +51,9 @@ public class AddStockItemPage extends AuthenticatedPage {
             
             
         }
+		
+	
+
 
         @Override
         protected void onSubmit()
@@ -55,7 +61,14 @@ public class AddStockItemPage extends AuthenticatedPage {
             System.out.println("TestAddStockItemPage");
             stockItems.add(stockItem);
             
+ 
             setResponsePage(StockItemsPage.class);
+        }
+        
+        @Override
+        protected void onError()
+        {
+            System.out.println("Error addStockItemPage submit");
         }
     }
 }

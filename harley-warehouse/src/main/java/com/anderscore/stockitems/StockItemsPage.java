@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.wicket.Page;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
@@ -56,9 +58,19 @@ public class StockItemsPage extends AuthenticatedPage {
         
         add(modal);
         
-
+        /* test wicket modal window for new item */
+        final ModalWindow addItemModal = new ModalWindow("addItemModal");
+        addItemModal.setCookieName("addItemModalCookie");
+        addItemModal.setPageCreator(new ModalWindow.PageCreator()
+        {
+            public Page createPage()
+            {
+                return new AddStockItemPage(addItemModal, stockItems);
+            }
+        });
         
-
+        add(addItemModal);
+        
         add(new ListView<StockItem>("stockItems", new ListModel<StockItem>(stockItems)) {
             @Override
             protected void populateItem(final ListItem<StockItem> item) {
@@ -123,11 +135,21 @@ public class StockItemsPage extends AuthenticatedPage {
 			@Override
 
 			public void onClick() {
-				setResponsePage(new AddStockItemPage("", stockItems));
+				setResponsePage(new AddStockItemPage(addItemModal, stockItems));
 			}
 		};
 
 		add(link);
+		
+		add(new AjaxLink<Void>("addButtonModal")
+        {
+            @Override
+            public void onClick(AjaxRequestTarget target)
+            {
+                addItemModal.show(target);
+            }
+        });
+		
 	}
     protected StockItemPanel newStockItemPanel(String wicketId, StockItem stockItem) {
         return new StockItemPanel(wicketId, stockItem) {
