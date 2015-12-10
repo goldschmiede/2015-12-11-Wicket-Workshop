@@ -94,9 +94,9 @@ public class StockItemsPage extends AuthenticatedPage {
         this.stockItemsTable.add(listView);
 
         add(stockItemsTable);
-        add(this.editStockItemModal = new StockItemModal("editStockItemModal", new EditStockItemFormStrategy()));
+        add(this.editStockItemModal = new StockItemModal("editStockItemModal", new EditStockItemFormStrategy(), stockItemsTable));
 
-        add(this.addStockItemModal = new StockItemModal("addStockItemModal", new NewStockItemFormStrategy(stockItems)));
+        add(this.addStockItemModal = new StockItemModal("addStockItemModal", new NewStockItemFormStrategy(stockItems), stockItemsTable));
 //
 //        addStockItemModal = new ModalWindow("addStockItemModal");
 //        addStockItemModal.setCookieName("addStockItemModalCookie");
