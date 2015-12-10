@@ -2,6 +2,8 @@ package com.anderscore.stockitems;
 
 import com.anderscore.model.StockItem;
 import de.agilecoders.wicket.core.markup.html.bootstrap.dialog.Modal;
+
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.joda.time.DateTime;
 
 /**
@@ -11,13 +13,10 @@ public class StockItemModal extends Modal<StockItem> {
 
     private StockItemPanel modalPanel;
 
-    public StockItemModal(String id, StockItem stockItem, StockItemFormStrategy strategy) {
+    public StockItemModal(String id, StockItemFormStrategy strategy, WebMarkupContainer container) {
         super(id);
-        add(this.modalPanel = new StockItemPanel("content", stockItem, strategy));
-    }
-
-    public StockItemModal(String id, StockItemFormStrategy strategy) {
-        this(id, new StockItem(1L, "Dummy", 1, "A", DateTime.now(), "1"), strategy);
+        modalPanel = new StockItemPanel("content", new StockItem(), strategy, container);
+        add(modalPanel);
     }
 
     public void updateContent(StockItem stockItem) {

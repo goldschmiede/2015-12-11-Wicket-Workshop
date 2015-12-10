@@ -1,14 +1,19 @@
 package com.anderscore.stockitems;
 
-import de.agilecoders.wicket.core.markup.html.bootstrap.form.BootstrapForm;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormSubmitBehavior;
+import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
+import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 
 import com.anderscore.model.StockItem;
+
+import de.agilecoders.wicket.core.markup.html.bootstrap.form.BootstrapForm;
 
 /**
  * Created by dkraemer on 08.12.15.
@@ -17,13 +22,19 @@ public class StockItemPanel extends Panel {
 
 
     private EditStockItemForm form;
+    private final WebMarkupContainer container;
 
     /**
      * @param id
      */
-    public StockItemPanel(String id, final StockItem stockItem, final StockItemFormStrategy strategy)
+    public StockItemPanel(String id, final StockItem stockItem, final StockItemFormStrategy strategy, WebMarkupContainer container)
     {
         super(id);
+        
+        this.container = container;
+        
+        Label panelTitle = new Label("title", "Test"); 
+        this.add(panelTitle);
 
         add(this.form = new EditStockItemForm("stockItemForm", stockItem));
         add(new FeedbackPanel("feedback"));
@@ -40,8 +51,21 @@ public class StockItemPanel extends Panel {
             @Override
             protected void onSubmit(AjaxRequestTarget target) {
                 strategy.onSubmit(form.getStockItem());
-                //target.add(form);
-                StockItemPanel.this.onSubmit(target);
+                target.add(StockItemPanel.this.container);
+                
+                ((StockItemModal) StockItemPanel.this.getParent()).close(target);
+            }
+        });
+        
+        this.form.add(new AjaxSubmitLink("saveButton")
+        {
+            @Override
+            public void onSubmit(AjaxRequestTarget target, Form form)
+            {
+            	 strategy.onSubmit(((EditStockItemForm) form).getStockItem());
+                 target.add(StockItemPanel.this.container);
+               
+               ((StockItemModal) StockItemPanel.this.getParent()).close(target);
             }
         });
     }

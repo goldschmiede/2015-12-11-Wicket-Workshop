@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <wicket:panel xmlns:wicket="http://wicket.apache.org">
+	 <h2 wicket:id="title"></h2>
+
     <form wicket:id="stockItemForm" role="form">
         <div class="form-group">
             <label wicket:for="id">ID:</label>
@@ -60,7 +62,8 @@
                         </div>
                     </wicket:fragment>
                 </div>-->
-        <button type="submit" class="btn btn-main">Submit</button>
+        <button type="submit" class="btn btn-main">Save</button>
+        <button class="btn  btn-primary" wicket:id="saveButton">Save</button>
     </form>
 
     <span wicket:id="feedback">feedbackmessages will be put here</span>
