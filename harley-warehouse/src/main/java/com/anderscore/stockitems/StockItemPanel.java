@@ -46,7 +46,7 @@ public class StockItemPanel extends Panel {
             add(new TextField<>("name"));
             add(new TextField<>("quantity"));
             add(new TextField<>("storageArea"));
-            add(new TextField<>("productionDate"));
+            //add(new TextField<>("productionDate"));
             add(new TextField<>("batch"));
         }
 
