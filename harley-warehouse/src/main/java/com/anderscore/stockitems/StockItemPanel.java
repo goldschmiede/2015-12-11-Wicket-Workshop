@@ -1,10 +1,11 @@
 package com.anderscore.stockitems;
 
+import com.googlecode.wicket.jquery.ui.markup.html.link.AjaxLink;
+import de.agilecoders.wicket.core.markup.html.bootstrap.form.BootstrapForm;
+import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormSubmitBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
-import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -13,8 +14,6 @@ import org.apache.wicket.model.CompoundPropertyModel;
 
 import com.anderscore.model.StockItem;
 
-import de.agilecoders.wicket.core.markup.html.bootstrap.form.BootstrapForm;
-
 /**
  * Created by dkraemer on 08.12.15.
  */
@@ -22,22 +21,19 @@ public class StockItemPanel extends Panel {
 
 
     private EditStockItemForm form;
-    private final WebMarkupContainer container;
+    private StockItemModal modal;
 
     /**
      * @param id
      */
-    public StockItemPanel(String id, final StockItem stockItem, final StockItemFormStrategy strategy, WebMarkupContainer container)
+    public StockItemPanel(String id, final StockItem stockItem, final StockItemFormStrategy strategy, final StockItemModal modal, final MarkupContainer table)
     {
         super(id);
-        
-        this.container = container;
-        
-        Label panelTitle = new Label("title", "Test"); 
-        this.add(panelTitle);
 
-        add(this.form = new EditStockItemForm("stockItemForm", stockItem));
+        add(this.form = new EditStockItemForm("stockItemForm", stockItem, modal, strategy, table));
+        this.form.setOutputMarkupId(true);
         add(new FeedbackPanel("feedback"));
+        this.modal = modal;
 
         this.form.add(new AjaxFormSubmitBehavior("submit") {
 
@@ -51,21 +47,9 @@ public class StockItemPanel extends Panel {
             @Override
             protected void onSubmit(AjaxRequestTarget target) {
                 strategy.onSubmit(form.getStockItem());
-                target.add(StockItemPanel.this.container);
-                
-                ((StockItemModal) StockItemPanel.this.getParent()).close(target);
-            }
-        });
-        
-        this.form.add(new AjaxSubmitLink("saveButton")
-        {
-            @Override
-            public void onSubmit(AjaxRequestTarget target, Form form)
-            {
-            	 strategy.onSubmit(((EditStockItemForm) form).getStockItem());
-                 target.add(StockItemPanel.this.container);
-               
-               ((StockItemModal) StockItemPanel.this.getParent()).close(target);
+                target.add(form);
+                StockItemPanel.this.onSubmit(target);
+
             }
         });
     }
@@ -81,7 +65,7 @@ public class StockItemPanel extends Panel {
     static public final class EditStockItemForm extends BootstrapForm<StockItem>
     {
 
-        public EditStockItemForm(final String id, final StockItem stockItem)
+        public EditStockItemForm(final String id, final StockItem stockItem, final StockItemModal modal, final StockItemFormStrategy strategy, final MarkupContainer table)
         {
             super(id, new CompoundPropertyModel<>(stockItem));
             
@@ -91,11 +75,14 @@ public class StockItemPanel extends Panel {
             add(new TextField<>("storageArea"));
             //add(new TextField<>("productionDate"));
             add(new TextField<>("batch"));
-        }
-
-        @Override
-        public final void onSubmit()
-        {
+            add(new AjaxSubmitLink("submitButton"){
+                @Override
+                protected void onSubmit(AjaxRequestTarget target, Form form){
+                    strategy.onSubmit(getStockItem());
+                    modal.close(target);
+                    target.add(table);
+                }
+            });
         }
 
         public void setStockItem(StockItem stockItem){
