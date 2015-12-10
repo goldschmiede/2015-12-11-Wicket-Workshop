@@ -37,27 +37,19 @@ public class StockItemsPage extends AuthenticatedPage {
             new StockItem(37509L, "Ignition XXX", 0, "B", DateTime.now(), "A0"))
     );
 
-    private StockItemModal modal;
+    private final StockItemModal modal;
 
     @SuppressWarnings("serial")
 	public StockItemsPage(final PageParameters parameters) {
         super(parameters);
 
-        modal = new StockItemModal("modal");
-        // Dummy...
-        final StockItemPanel stockItemPanel = new StockItemPanel("content", new StockItem(1L, "name", 1, "A", DateTime.now(), "1"));
-        modal.setContent(stockItemPanel);
+        add (this.modal = new StockItemModal("modal"));
         /*        final SimpleMessageValidation validation = new SimpleMessageValidation();
         validation.getConfig().appendToParent(true);
         add(validation);
 
         final ModalWindow modal;
         add(modal = new ModalWindow("modalWindow"));*/
-        
-        add(modal);
-        
-
-        
 
         add(new ListView<StockItem>("stockItems", new ListModel<StockItem>(stockItems)) {
             @Override
@@ -70,7 +62,6 @@ public class StockItemsPage extends AuthenticatedPage {
                 item.add(new Label("batch", new PropertyModel(item.getModelObject(), "batch")));
 
                 final StockItem stockItem = item.getModelObject();
-                final StockItemPanel modalContent = newStockItemPanel("content", stockItem);
 
                 //final ModalWindow modalWindow = new ModalWindow("modalWindow");
                 //Label label = new Label(modalWindow.getContentId(), "I'm a modal window!");
@@ -80,10 +71,8 @@ public class StockItemsPage extends AuthenticatedPage {
                     @Override
                     public void onClick(AjaxRequestTarget target)
                     {
-                        //TODO: change modal content with method
-                        stockItemPanel.updateStockItemPanel(stockItem);
-                        modal.setContent(stockItemPanel);
-                        //modal.show(target);
+                        modal.updateContent(stockItem);
+                        modal.show(target);
 
                         /*modal.setContent(new StockItemPanel(modal.getContentId(), stockItem));
                         modal.setTitle("Edit stock item");
@@ -129,14 +118,4 @@ public class StockItemsPage extends AuthenticatedPage {
 
 		add(link);
 	}
-    protected StockItemPanel newStockItemPanel(String wicketId, StockItem stockItem) {
-        return new StockItemPanel(wicketId, stockItem) {
-            @Override
-            protected void onSubmit(AjaxRequestTarget target) {
-                super.onSubmit(target);
-                modal.close(target);
-            }
-        };
-    }
-
 }

@@ -28,11 +28,50 @@ public class StockItemPanel extends Panel {
     public StockItemPanel(String id, StockItem stockItem)
     {
         super(id);
-        this.form = new EditStockItemForm("stockItemForm", stockItem);
-        add(form);
 
-        FeedbackPanel feedbackPanel = new FeedbackPanel("feedback");
-        add(feedbackPanel);
+        add(this.form = new EditStockItemForm("stockItemForm", stockItem));
+        add(new FeedbackPanel("feedback"));
+
+        this.form.add(new AjaxFormSubmitBehavior("submit") {
+
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            protected void onError(AjaxRequestTarget target) {
+                target.add(form);
+            }
+
+            @Override
+            protected void onSubmit(AjaxRequestTarget target) {
+                target.add(form);
+                StockItemPanel.this.onSubmit(target);
+            }
+        });
+    }
+
+    //TODO workaround? Check in detail...
+    protected void onSubmit(AjaxRequestTarget target) {
+    }
+
+    public void updateStockItemForm(StockItem stockItem) {
+        remove(this.form);
+        add(this.form = new EditStockItemForm("stockItemForm", stockItem));
+
+        this.form.add(new AjaxFormSubmitBehavior("submit") {
+
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            protected void onError(AjaxRequestTarget target) {
+                target.add(form);
+            }
+
+            @Override
+            protected void onSubmit(AjaxRequestTarget target) {
+                target.add(form);
+                StockItemPanel.this.onSubmit(target);
+            }
+        });
     }
 
     static public final class EditStockItemForm extends BootstrapForm<StockItem>
@@ -56,34 +95,5 @@ public class StockItemPanel extends Panel {
 /*            System.out.println("Test");
             setResponsePage(StockItemsPage.class);*/
         }
-    }
-
-    public StockItemPanel withAjax() {
-        form.add(new AjaxFormSubmitBehavior("submit") {
-
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            protected void onError(AjaxRequestTarget target) {
-                target.add(form);
-            }
-
-            @Override
-            protected void onSubmit(AjaxRequestTarget target) {
-                target.add(form);
-                StockItemPanel.this.onSubmit(target);
-            }
-        });
-        return this;
-    }
-
-    //TODO workaround? Check in detail...
-    protected void onSubmit(AjaxRequestTarget target) {
-    }
-
-    public void updateStockItemPanel(StockItem stockItem) {
-        remove(form);
-        this.form = new EditStockItemForm("stockItemForm", stockItem);
-        add(form);
     }
 }
