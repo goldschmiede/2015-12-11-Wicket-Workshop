@@ -54,22 +54,7 @@ public class EditStockItemPanel extends Panel {
     }
 
     public void updateStockItemForm(StockItem stockItem) {
-        remove(this.form);
-        add(this.form = new EditStockItemForm("stockItemForm", stockItem));
-
-        this.form.add(new AjaxFormSubmitBehavior("submit") {
-
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            protected void onError(AjaxRequestTarget target) {
-            }
-
-            @Override
-            protected void onSubmit(AjaxRequestTarget target) {
-                EditStockItemPanel.this.onSubmit(target);
-            }
-        });
+        form.update(stockItem);
     }
 
     static public final class EditStockItemForm extends BootstrapForm<StockItem>
@@ -90,8 +75,10 @@ public class EditStockItemPanel extends Panel {
         @Override
         public final void onSubmit()
         {
-/*            System.out.println("Test");
-            setResponsePage(StockItemsPage.class);*/
+        }
+
+        public void update(StockItem stockItem){
+            getModel().setObject(stockItem);
         }
     }
 }
