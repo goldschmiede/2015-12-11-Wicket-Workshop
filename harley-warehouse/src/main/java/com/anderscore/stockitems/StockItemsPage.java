@@ -7,6 +7,7 @@ import java.util.List;
 import org.apache.wicket.Page;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
@@ -18,7 +19,6 @@ import org.joda.time.DateTime;
 
 import com.anderscore.authenticate.AuthenticatedPage;
 import com.anderscore.model.StockItem;
-import com.googlecode.wicket.jquery.ui.form.button.Button;
 import com.googlecode.wicket.jquery.ui.markup.html.link.AjaxLink;
 
 /**
@@ -26,6 +26,8 @@ import com.googlecode.wicket.jquery.ui.markup.html.link.AjaxLink;
  */
 public class StockItemsPage extends AuthenticatedPage {
 	
+	private static final long serialVersionUID = 6729342242088892987L;
+
 	//Long id, String name, Integer quantity, String storageArea, DateTime productionDate, String chargeNumber
     public static final List<StockItem> stockItems = new ArrayList<StockItem>(Arrays.asList(
             new StockItem(12311L, "Lighting HF500", 3, "A", DateTime.now(), "C1"),
@@ -39,63 +41,40 @@ public class StockItemsPage extends AuthenticatedPage {
             new StockItem(37509L, "Ignition XXX", 0, "B", DateTime.now(), "A0"))
     );
 
-    private StockItemModal modal;
+    private final WebMarkupContainer stockItemsTable;
+	private final ListView<StockItem> listView;
+    private final EditStockItemModal editStockItemModal;
+    private final ModalWindow addStockItemModal;
+
 
     @SuppressWarnings("serial")
 	public StockItemsPage(final PageParameters parameters) {
         super(parameters);
 
-        modal = new StockItemModal("modal");
-        // Dummy...
-        final StockItemPanel stockItemPanel = new StockItemPanel("content", new StockItem(1L, "name", 1, "A", DateTime.now(), "1"));
-        modal.setContent(stockItemPanel);
-        /*        final SimpleMessageValidation validation = new SimpleMessageValidation();
-        validation.getConfig().appendToParent(true);
-        add(validation);
-
-        final ModalWindow modal;
-        add(modal = new ModalWindow("modalWindow"));*/
-        
-        add(modal);
-        
-        /* test wicket modal window for new item */
-        final ModalWindow addItemModal = new ModalWindow("addItemModal");
-        addItemModal.setCookieName("addItemModalCookie");
-        addItemModal.setPageCreator(new ModalWindow.PageCreator()
-        {
-            public Page createPage()
-            {
-                return new AddStockItemPage(addItemModal, stockItems);
-            }
-        });
-        
-        add(addItemModal);
-        
-        add(new ListView<StockItem>("stockItems", new ListModel<StockItem>(stockItems)) {
+        this.stockItemsTable = new WebMarkupContainer("stockItemsTable");
+        this.listView = new ListView<StockItem>("stockItems", new ListModel<StockItem>(stockItems)) {
             @Override
             protected void populateItem(final ListItem<StockItem> item) {
-                item.add(new Label("id", new PropertyModel(item.getModelObject(), "id")));
-                item.add(new Label("name", new PropertyModel(item.getModelObject(), "name")));
-                item.add(new Label("quantity", new PropertyModel(item.getModelObject(), "quantity")));
-                item.add(new Label("storageArea", new PropertyModel(item.getModelObject(), "storageArea")));
-                item.add(new Label("productionDate", new PropertyModel(item.getModelObject(), "productionDate")));
-                item.add(new Label("batch", new PropertyModel(item.getModelObject(), "batch")));
+            	final StockItem stockItem = item.getModelObject();
+            	
+                item.add(new Label("id", new PropertyModel<StockItem>(stockItem, "id")));
+                item.add(new Label("name", new PropertyModel<StockItem>(stockItem, "name")));
+                item.add(new Label("quantity", new PropertyModel<StockItem>(stockItem, "quantity")));
+                item.add(new Label("storageArea", new PropertyModel<StockItem>(stockItem, "storageArea")));
+                item.add(new Label("productionDate", new PropertyModel<StockItem>(stockItem, "productionDate")));
+                item.add(new Label("batch", new PropertyModel<StockItem>(stockItem, "batch")));
 
-                final StockItem stockItem = item.getModelObject();
-                final StockItemPanel modalContent = newStockItemPanel("content", stockItem);
 
                 //final ModalWindow modalWindow = new ModalWindow("modalWindow");
                 //Label label = new Label(modalWindow.getContentId(), "I'm a modal window!");
 
-                //Scheinbar egal, welchen Button (wicket vs jquery), da Bootstrap greift.
                 item.add(new AjaxLink("editButton"){
                     @Override
                     public void onClick(AjaxRequestTarget target)
                     {
-                        //TODO: change modal content with method
-                        stockItemPanel.updateStockItemPanel(stockItem);
-                        modal.setContent(stockItemPanel);
-                        //modal.show(target);
+                        editStockItemModal.updateContent(stockItem);
+                        target.add(editStockItemModal);
+                        editStockItemModal.show(target);
 
                         /*modal.setContent(new StockItemPanel(modal.getContentId(), stockItem));
                         modal.setTitle("Edit stock item");
@@ -104,38 +83,39 @@ public class StockItemsPage extends AuthenticatedPage {
                     }
                 });
 
-
-                item.add(new Button("deleteButton") {
+                item.add(new AjaxLink("deleteButton") {
 
                     @Override
-                    public void onSubmit() {
+                    public void onClick(AjaxRequestTarget target) {
                         stockItems.remove(stockItem);
-                        setResponsePage(StockItemsPage.class);
+                        target.add(stockItemsTable);
                     }
                 });
             }
+        };
+        this.stockItemsTable.setOutputMarkupId(true);
+        this.stockItemsTable.add(listView);
+
+        add(stockItemsTable);
+        add(this.editStockItemModal = new EditStockItemModal("editStockItemModal"));
+
+        addStockItemModal = new ModalWindow("addStockItemModal");
+        addStockItemModal.setCookieName("addStockItemModalCookie");
+        addStockItemModal.setPageCreator(new ModalWindow.PageCreator()
+        {
+            public Page createPage()
+            {
+                return new AddStockItemPage(addStockItemModal, stockItems);
+            }
         });
-
-
-		// add(new AjaxLink("newButton"){
-		// @Override
-		// public void onClick(AjaxRequestTarget target)
-		// {
-		// modal.setContent(new AddStockItemModal(modal.getContentId(),
-		// stockItems));
-		// modal.setTitle("Add new stock item");
-		// modal.showUnloadConfirmation(false);
-		//
-		// modal.show(target);
-		//
-		// }
-		// });
-
+        
+        add(addStockItemModal);
+        
 		Link link = new Link("addButton") {
 			@Override
 
 			public void onClick() {
-				setResponsePage(new AddStockItemPage(addItemModal, stockItems));
+				setResponsePage(new AddStockItemPage(addStockItemModal, stockItems));
 			}
 		};
 
@@ -146,19 +126,8 @@ public class StockItemsPage extends AuthenticatedPage {
             @Override
             public void onClick(AjaxRequestTarget target)
             {
-                addItemModal.show(target);
+                addStockItemModal.show(target);
             }
         });
-		
 	}
-    protected StockItemPanel newStockItemPanel(String wicketId, StockItem stockItem) {
-        return new StockItemPanel(wicketId, stockItem) {
-            @Override
-            protected void onSubmit(AjaxRequestTarget target) {
-                super.onSubmit(target);
-                modal.close(target);
-            }
-        };
-    }
-
 }
