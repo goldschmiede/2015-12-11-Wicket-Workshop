@@ -4,12 +4,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.wicket.Page;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.PropertyModel;
@@ -43,8 +40,8 @@ public class StockItemsPage extends AuthenticatedPage {
 
     private final WebMarkupContainer stockItemsTable;
 	private final ListView<StockItem> listView;
-    private final EditStockItemModal editStockItemModal;
-    private final ModalWindow addStockItemModal;
+    private final StockItemModal editStockItemModal;
+    private final StockItemModal addStockItemModal;
 
 
     @SuppressWarnings("serial")
@@ -97,35 +94,39 @@ public class StockItemsPage extends AuthenticatedPage {
         this.stockItemsTable.add(listView);
 
         add(stockItemsTable);
-        add(this.editStockItemModal = new EditStockItemModal("editStockItemModal"));
+        add(this.editStockItemModal = new StockItemModal("editStockItemModal", new EditStockItemFormStrategy()));
 
-        addStockItemModal = new ModalWindow("addStockItemModal");
-        addStockItemModal.setCookieName("addStockItemModalCookie");
-        addStockItemModal.setPageCreator(new ModalWindow.PageCreator()
-        {
-            public Page createPage()
-            {
-                return new AddStockItemPage(addStockItemModal, stockItems);
-            }
-        });
+        add(this.addStockItemModal = new StockItemModal("addStockItemModal", new NewStockItemFormStrategy(stockItems)));
+//
+//        addStockItemModal = new ModalWindow("addStockItemModal");
+//        addStockItemModal.setCookieName("addStockItemModalCookie");
+//        addStockItemModal.setPageCreator(new ModalWindow.PageCreator()
+//        {
+//            public Page createPage()
+//            {
+//                return new AddStockItemPage(addStockItemModal, stockItems);
+//            }
+//        });
+//
+//        add(addStockItemModal);
         
-        add(addStockItemModal);
-        
-		Link link = new Link("addButton") {
-			@Override
-
-			public void onClick() {
-				setResponsePage(new AddStockItemPage(addStockItemModal, stockItems));
-			}
-		};
-
-		add(link);
+//		Link link = new Link("addButton") {
+//			@Override
+//
+//			public void onClick() {
+//				setResponsePage(new AddStockItemPage(addStockItemModal, stockItems));
+//			}
+//		};
+//
+//		add(link);
 		
 		add(new AjaxLink<Void>("addButtonModal")
         {
             @Override
             public void onClick(AjaxRequestTarget target)
             {
+                addStockItemModal.updateContent(new StockItem());
+                target.add(addStockItemModal);
                 addStockItemModal.show(target);
             }
         });
