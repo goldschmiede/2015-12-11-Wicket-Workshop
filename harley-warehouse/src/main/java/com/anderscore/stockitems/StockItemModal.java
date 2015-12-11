@@ -18,11 +18,23 @@ public class StockItemModal extends Modal<StockItem> {
 
     public StockItemModal(String id, IModel<StockItem> stockItem, StockItemFormStrategy strategy, MarkupContainer table) {
         super(id);
-        this.modalPanel = new StockItemPanel("content", stockItem, strategy, this, table);
+        this.modalPanel = new StockItemPanel("content", stockItem, strategy, this) {
+
+			@Override
+			protected void onChanged(AjaxRequestTarget target) {
+				StockItemModal.this.onChanged(target);
+				
+			}
+        };
         add(modalPanel);
     }
     
-    @Override
+    protected void onChanged(AjaxRequestTarget target) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
     public Modal<StockItem> show(IPartialPageRequestHandler target) {
     	target.add(this);
     	return super.show(target);

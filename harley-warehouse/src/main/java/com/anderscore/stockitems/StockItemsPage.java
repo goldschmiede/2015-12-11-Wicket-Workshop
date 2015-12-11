@@ -118,11 +118,21 @@ public class StockItemsPage extends AuthenticatedPage {
         this.stockItemsTable.add(listView);
 
         add(stockItemsTable);
-        add(this.editStockItemModal = new StockItemModal("editStockItemModal", new PropertyModel<StockItem>(this, "currentStockItem"), new EditStockItemFormStrategy(), stockItemsTable));
+        add(this.editStockItemModal = new StockItemModal("editStockItemModal", new PropertyModel<StockItem>(this, "currentStockItem"), new EditStockItemFormStrategy(), stockItemsTable) {
+        	@Override
+        	protected void onChanged(AjaxRequestTarget target) {
+        		target.add(stockItemsTable);
+        	}
+        });
         editStockItemModal.header(Model.<String>of("Bearbeiten"));
 
 
-        add(this.addStockItemModal = new StockItemModal("addStockItemModal", new PropertyModel<StockItem>(this, "currentStockItem"), new NewStockItemFormStrategy(stockItems), stockItemsTable));
+        add(this.addStockItemModal = new StockItemModal("addStockItemModal", new PropertyModel<StockItem>(this, "currentStockItem"), new NewStockItemFormStrategy(stockItems), stockItemsTable) {
+        	@Override
+        	protected void onChanged(AjaxRequestTarget target) {
+        		target.add(stockItemsTable);
+        	}
+        }); 
         addStockItemModal.header(Model.<String>of("Hinzufügen"));
 //
 //        addStockItemModal = new ModalWindow("addStockItemModal");

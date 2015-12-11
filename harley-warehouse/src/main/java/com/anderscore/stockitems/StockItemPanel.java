@@ -21,7 +21,7 @@ import de.agilecoders.wicket.core.markup.html.bootstrap.form.BootstrapForm;
 /**
  * Created by dkraemer on 08.12.15.
  */
-public class StockItemPanel extends Panel {
+public abstract class StockItemPanel extends Panel {
 
 
     private EditStockItemForm form;
@@ -30,11 +30,11 @@ public class StockItemPanel extends Panel {
     /**
      * @param id
      */
-    public StockItemPanel(String id, final IModel<StockItem> stockItem, final StockItemFormStrategy strategy, final StockItemModal modal, final MarkupContainer table)
+    public StockItemPanel(String id, final IModel<StockItem> stockItem, final StockItemFormStrategy strategy, final StockItemModal modal)
     {
         super(id);
 
-        add(this.form = new EditStockItemForm("stockItemForm", stockItem, modal, strategy, table));
+        add(this.form = new EditStockItemForm("stockItemForm", stockItem, modal, strategy));
 //        this.form.setOutputMarkupId(true);
 //        this.setOutputMarkupId(true);
         add(new FeedbackPanel("feedback"));
@@ -76,7 +76,7 @@ public class StockItemPanel extends Panel {
     public final class EditStockItemForm extends BootstrapForm<StockItem>
     {
 
-        public EditStockItemForm(final String id, IModel<StockItem> stockItem, final StockItemModal modal, final StockItemFormStrategy strategy, final MarkupContainer table)
+        public EditStockItemForm(final String id, IModel<StockItem> stockItem, final StockItemModal modal, final StockItemFormStrategy strategy)
         {
             super(id, new CompoundPropertyModel<>(stockItem));
             
@@ -95,7 +95,7 @@ public class StockItemPanel extends Panel {
                 protected void onSubmit(AjaxRequestTarget target, Form form){
                     strategy.onSubmit(EditStockItemForm.this.getModelObject());
                     modal.close(target);
-                    target.add(table);
+                    onChanged(target);
                 }
                 
                 @Override
@@ -105,5 +105,8 @@ public class StockItemPanel extends Panel {
                 }
             });
         }
+
     }
+    
+    protected abstract void onChanged(AjaxRequestTarget target); 
 }
