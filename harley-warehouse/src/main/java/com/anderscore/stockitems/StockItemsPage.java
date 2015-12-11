@@ -10,6 +10,7 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.markup.html.list.PropertyListView;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.util.ListModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
@@ -49,34 +50,32 @@ public class StockItemsPage extends AuthenticatedPage {
         super(parameters);
 
         this.stockItemsTable = new WebMarkupContainer("stockItemsTable");
-        this.listView = new ListView<StockItem>("stockItems", new ListModel<StockItem>(stockItems)) {
+//        this.listView = new ListView<StockItem>("stockItems", new ListModel<StockItem>(stockItems)) 
+        this.listView = new PropertyListView<StockItem>("stockItems", new ListModel<StockItem>(stockItems)) {
             @Override
             protected void populateItem(final ListItem<StockItem> item) {
-            	final StockItem stockItem = item.getModelObject();
             	
-                item.add(new Label("id", new PropertyModel<StockItem>(stockItem, "id")));
-                item.add(new Label("name", new PropertyModel<StockItem>(stockItem, "name")));
-                item.add(new Label("quantity", new PropertyModel<StockItem>(stockItem, "quantity")));
-                item.add(new Label("storageArea", new PropertyModel<StockItem>(stockItem, "storageArea")));
-                item.add(new Label("productionDate", new PropertyModel<StockItem>(stockItem, "productionDate")));
-                item.add(new Label("batch", new PropertyModel<StockItem>(stockItem, "batch")));
+//                item.add(new Label("id", new PropertyModel<StockItem>(item.getModel(), "id")));
+//                item.add(new Label("name", new PropertyModel<StockItem>(item.getModel(), "name")));
+//                item.add(new Label("quantity", new PropertyModel<StockItem>(item.getModel(), "quantity")));
+//                item.add(new Label("storageArea", new PropertyModel<StockItem>(item.getModel(), "storageArea")));
+//                item.add(new Label("productionDate", new PropertyModel<StockItem>(item.getModel(), "productionDate")));
+//                item.add(new Label("batch", new PropertyModel<StockItem>(item.getModel(), "batch")));
+            	
+                item.add(new Label("id"));
+                item.add(new Label("name"));
+                item.add(new Label("quantity"));
+                item.add(new Label("storageArea" ));
+                item.add(new Label("productionDate"));
+                item.add(new Label("batch"));
 
-
-                //final ModalWindow modalWindow = new ModalWindow("modalWindow");
-                //Label label = new Label(modalWindow.getContentId(), "I'm a modal window!");
 
                 item.add(new AjaxLink("editButton"){
                     @Override
                     public void onClick(AjaxRequestTarget target)
                     {
-                        editStockItemModal.updateContent(stockItem);
-                        target.add(editStockItemModal);
+                        editStockItemModal.updateContent(target, item.getModelObject());
                         editStockItemModal.show(target);
-
-                        /*modal.setContent(new StockItemPanel(modal.getContentId(), stockItem));
-                        modal.setTitle("Edit stock item");
-
-                        modal.show(target);*/
                     }
                 });
 
@@ -84,11 +83,13 @@ public class StockItemsPage extends AuthenticatedPage {
 
                     @Override
                     public void onClick(AjaxRequestTarget target) {
-                        stockItems.remove(stockItem);
+                        stockItems.remove(item.getModelObject());
                         target.add(stockItemsTable);
                     }
                 });
+            
             }
+            
         };
         this.stockItemsTable.setOutputMarkupId(true);
         this.stockItemsTable.add(listView);
@@ -125,8 +126,7 @@ public class StockItemsPage extends AuthenticatedPage {
             @Override
             public void onClick(AjaxRequestTarget target)
             {
-                addStockItemModal.updateContent(new StockItem());
-                target.add(addStockItemModal);
+                addStockItemModal.updateContent(target, new StockItem());
                 addStockItemModal.show(target);
             }
         });

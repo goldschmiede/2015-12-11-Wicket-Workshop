@@ -3,6 +3,7 @@ package com.anderscore.stockitems;
 import com.anderscore.model.StockItem;
 import de.agilecoders.wicket.core.markup.html.bootstrap.dialog.Modal;
 import org.apache.wicket.MarkupContainer;
+import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.joda.time.DateTime;
 
 /**
@@ -21,7 +22,8 @@ public class StockItemModal extends Modal<StockItem> {
         this(id, new StockItem(), strategy, table);
     }
 
-    public void updateContent(StockItem stockItem) {
+    public void updateContent(AjaxRequestTarget target, StockItem stockItem) {
+    	target.add(this);
         modalPanel.updateStockItemForm(stockItem);
     }
 }
