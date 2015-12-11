@@ -35,6 +35,8 @@ public class WarehouseApplication extends AuthenticatedWebApplication
 		super.init();
 		Bootstrap.install(this);
 		// add your configuration here
+		getComponentInstantiationListeners().add(new OutputMarkupIdListener());
+		getComponentInstantiationListeners().add(new AddFeedbackListener());
 	}
 
 	@Override

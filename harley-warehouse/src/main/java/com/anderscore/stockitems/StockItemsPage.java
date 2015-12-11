@@ -6,13 +6,16 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.devutils.debugbar.DebugBar;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.list.PropertyListView;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.LoadableDetachableModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.model.util.ListModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 import com.anderscore.authenticate.AuthenticatedPage;
@@ -43,15 +46,28 @@ public class StockItemsPage extends AuthenticatedPage {
 	private final ListView<StockItem> listView;
     private final StockItemModal editStockItemModal;
     private final StockItemModal addStockItemModal;
+    private StockItem currentStockItem = new StockItem();
 
 
     @SuppressWarnings("serial")
 	public StockItemsPage(final PageParameters parameters) {
         super(parameters);
-
+        
+        add(new DebugBar("debug"));
+        
+       
         this.stockItemsTable = new WebMarkupContainer("stockItemsTable");
+        IModel<? extends List<StockItem>> items = new LoadableDetachableModel<List<StockItem>>() {
+
+			@Override
+			protected List<StockItem> load() {
+				return stockItems;
+			}
+		};
+
 //        this.listView = new ListView<StockItem>("stockItems", new ListModel<StockItem>(stockItems)) 
-        this.listView = new PropertyListView<StockItem>("stockItems", new ListModel<StockItem>(stockItems)) {
+//        this.listView = new PropertyListView<StockItem>("stockItems", new ListModel<StockItem>(stockItems)) {
+        	this.listView = new PropertyListView<StockItem>("stockItems", items) {
             @Override
             protected void populateItem(final ListItem<StockItem> item) {
             	
@@ -63,9 +79,13 @@ public class StockItemsPage extends AuthenticatedPage {
 //                item.add(new Label("batch", new PropertyModel<StockItem>(item.getModel(), "batch")));
             	
                 item.add(new Label("id"));
+                // Wicket stuff 
+//                item.add(new Label("name", model(on(item.getModel()).getName())));
+                // Wicket 8
+//                item.add(new Label("quantity", new LambdaModel(StockItem::getName())));
                 item.add(new Label("name"));
                 item.add(new Label("quantity"));
-                item.add(new Label("storageArea" ));
+                item.add(new Label("storageArea"));
                 item.add(new Label("productionDate"));
                 item.add(new Label("batch"));
 
@@ -74,7 +94,8 @@ public class StockItemsPage extends AuthenticatedPage {
                     @Override
                     public void onClick(AjaxRequestTarget target)
                     {
-                        editStockItemModal.updateContent(target, item.getModelObject());
+//                        editStockItemModal.updateContent(target, item.getModelObject());
+                    	currentStockItem = item.getModelObject();
                         editStockItemModal.show(target);
                     }
                 });
@@ -83,7 +104,9 @@ public class StockItemsPage extends AuthenticatedPage {
 
                     @Override
                     public void onClick(AjaxRequestTarget target) {
+                    	
                         stockItems.remove(item.getModelObject());
+                        listView.getModel().detach();
                         target.add(stockItemsTable);
                     }
                 });
@@ -95,9 +118,12 @@ public class StockItemsPage extends AuthenticatedPage {
         this.stockItemsTable.add(listView);
 
         add(stockItemsTable);
-        add(this.editStockItemModal = new StockItemModal("editStockItemModal", new EditStockItemFormStrategy(), stockItemsTable));
+        add(this.editStockItemModal = new StockItemModal("editStockItemModal", new PropertyModel<StockItem>(this, "currentStockItem"), new EditStockItemFormStrategy(), stockItemsTable));
+        editStockItemModal.header(Model.<String>of("Bearbeiten"));
 
-        add(this.addStockItemModal = new StockItemModal("addStockItemModal", new NewStockItemFormStrategy(stockItems), stockItemsTable));
+
+        add(this.addStockItemModal = new StockItemModal("addStockItemModal", new PropertyModel<StockItem>(this, "currentStockItem"), new NewStockItemFormStrategy(stockItems), stockItemsTable));
+        addStockItemModal.header(Model.<String>of("Hinzufügen"));
 //
 //        addStockItemModal = new ModalWindow("addStockItemModal");
 //        addStockItemModal.setCookieName("addStockItemModalCookie");
@@ -126,7 +152,8 @@ public class StockItemsPage extends AuthenticatedPage {
             @Override
             public void onClick(AjaxRequestTarget target)
             {
-                addStockItemModal.updateContent(target, new StockItem());
+            	currentStockItem = new StockItem();
+//                addStockItemModal.updateContent(target, new StockItem());
                 addStockItemModal.show(target);
             }
         });
