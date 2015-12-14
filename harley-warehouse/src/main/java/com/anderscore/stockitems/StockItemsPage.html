@@ -5,15 +5,10 @@
 <body>
 <!-- Content in extend is already in a div.container -->
 <wicket:extend>
-    <!-- Table -->
-    <!--
-    <button class="btn  btn-primary" wicket:id="addButton" data-toggle="modal" data-target="#myModal">
-        	<i class="glyphicon glyphicon-plus"></i>Add item
-    </button>
-    -->
+
     <div wicket:id="debug"></div>
     
-    <button class="btn btn-primary" wicket:id="addButtonModal">
+    <button class="btn btn-primary" wicket:id="addButton">
         	<i class="glyphicon glyphicon-plus"></i>Add item
     </button>
     
@@ -45,8 +40,7 @@
     </table>
 
 
-    <div wicket:id="editStockItemModal"></div>
-    <div wicket:id="addStockItemModal"></div>
+    <div wicket:id="stockItemModal"></div>
 
 </wicket:extend>
 </body>

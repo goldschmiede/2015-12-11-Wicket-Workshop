@@ -27,12 +27,11 @@ public class StockItemsPage extends AuthenticatedPage {
     private static final long serialVersionUID = 6729342242088892987L;
 
     private final StockItemDAO stockItemDAO;
+    private StockItem currentStockItem;
 
     private final WebMarkupContainer stockItemsTable;
     private final ListView<StockItem> listView;
-    private final StockItemModal editStockItemModal;
-    private final StockItemModal addStockItemModal;
-    private StockItem currentStockItem = new StockItem();
+    private final StockItemModal stockItemModal;
 
 
     @SuppressWarnings("serial")
@@ -40,10 +39,19 @@ public class StockItemsPage extends AuthenticatedPage {
         super(parameters);
 
         this.stockItemDAO = new SimpleStockItemDAO();
+        this.currentStockItem = new StockItem();
 
         add(new DebugBar("debug"));
 
-        this.stockItemsTable = new WebMarkupContainer("stockItemsTable");
+        add(new AjaxLink<Void>("addButton") {
+            @Override
+            public void onClick(AjaxRequestTarget target) {
+                currentStockItem = new StockItem();
+                stockItemModal.header(Model.of("Add new stock item"));
+                stockItemModal.setStrategy(new AddStockItemModalStrategy(stockItemDAO.getStockItems()));
+                stockItemModal.show(target);
+            }
+        });
 
         IModel<? extends List<StockItem>> items = new LoadableDetachableModel<List<StockItem>>() {
 
@@ -71,7 +79,9 @@ public class StockItemsPage extends AuthenticatedPage {
                     @Override
                     public void onClick(AjaxRequestTarget target) {
                         currentStockItem = item.getModelObject();
-                        editStockItemModal.show(target);
+                        stockItemModal.header(Model.of("Edit stock item"));
+                        stockItemModal.setStrategy(new EditStockItemModalStrategy());
+                        stockItemModal.show(target);
                     }
                 });
 
@@ -86,33 +96,15 @@ public class StockItemsPage extends AuthenticatedPage {
                 });
             }
         };
-        this.stockItemsTable.setOutputMarkupId(true);
-        this.stockItemsTable.add(listView);
-
+        this.stockItemsTable = new WebMarkupContainer("stockItemsTable");
+        stockItemsTable.setOutputMarkupId(true);
+        stockItemsTable.add(listView);
         add(stockItemsTable);
 
-        add(this.editStockItemModal = new StockItemModal("editStockItemModal", new PropertyModel<StockItem>(this, "currentStockItem"), new EditStockItemFormStrategy()) {
+        add(this.stockItemModal = new StockItemModal("stockItemModal", new PropertyModel<StockItem>(this, "currentStockItem")) {
             @Override
             protected void onChanged(AjaxRequestTarget target) {
                 target.add(stockItemsTable);
-            }
-        });
-        editStockItemModal.header(Model.of("Edit stock item"));
-
-
-        add(this.addStockItemModal = new StockItemModal("addStockItemModal", new PropertyModel<StockItem>(this, "currentStockItem"), new NewStockItemFormStrategy(stockItemDAO.getStockItems())) {
-            @Override
-            protected void onChanged(AjaxRequestTarget target) {
-                target.add(stockItemsTable);
-            }
-        });
-        addStockItemModal.header(Model.of("Add new stock item"));
-
-        add(new AjaxLink<Void>("addButtonModal") {
-            @Override
-            public void onClick(AjaxRequestTarget target) {
-                currentStockItem = new StockItem();
-                addStockItemModal.show(target);
             }
         });
     }

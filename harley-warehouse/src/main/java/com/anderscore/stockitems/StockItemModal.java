@@ -1,6 +1,5 @@
 package com.anderscore.stockitems;
 
-import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.core.request.handler.IPartialPageRequestHandler;
 import org.apache.wicket.model.IModel;
@@ -14,29 +13,39 @@ import de.agilecoders.wicket.core.markup.html.bootstrap.dialog.Modal;
  */
 public class StockItemModal extends Modal<StockItem> {
 
-    private StockItemPanel modalPanel;
+    private StockItemModalStrategy strategy;
 
-    public StockItemModal(String id, IModel<StockItem> stockItem, StockItemFormStrategy strategy) {
-        super(id);
-        this.modalPanel = new StockItemPanel("content", stockItem, strategy, this) {
+    public StockItemModal(String id, IModel<StockItem> stockItem, StockItemModalStrategy strategy) {
+        super(id, stockItem);
 
-			@Override
-			protected void onChanged(AjaxRequestTarget target) {
-				StockItemModal.this.onChanged(target);
-				
-			}
-        };
-        add(modalPanel);
+        this.strategy = strategy;
+        add(new StockItemPanel("content", stockItem, this));
+    }
+
+    public StockItemModal(String id, IModel<StockItem> stockItem) {
+        this(id, stockItem, StockItemModalStrategy.NOOP);
+    }
+
+    protected void onSubmit(AjaxRequestTarget target){
+        strategy.onSubmit(getModelObject());
+        close(target);
+        onChanged(target);
     }
     
     protected void onChanged(AjaxRequestTarget target) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
     public Modal<StockItem> show(IPartialPageRequestHandler target) {
     	target.add(this);
     	return super.show(target);
+    }
+
+    public StockItemModalStrategy getStrategy() {
+        return strategy;
+    }
+
+    public void setStrategy(StockItemModalStrategy strategy) {
+        this.strategy = strategy;
     }
 }

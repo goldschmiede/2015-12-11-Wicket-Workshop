@@ -1,9 +1,6 @@
 package com.anderscore.stockitems;
 
-import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.attributes.AjaxRequestAttributes;
-import org.apache.wicket.ajax.form.AjaxFormSubmitBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
@@ -21,63 +18,50 @@ import de.agilecoders.wicket.core.markup.html.bootstrap.form.BootstrapForm;
 /**
  * Created by dkraemer on 08.12.15.
  */
-public abstract class StockItemPanel extends Panel {
+public class StockItemPanel extends Panel {
 
-
-    private EditStockItemForm form;
     private StockItemModal modal;
 
     /**
      * @param id
      */
-    public StockItemPanel(String id, final IModel<StockItem> stockItem, final StockItemFormStrategy strategy, final StockItemModal modal)
-    {
-        super(id);
+    public StockItemPanel(final String id, final IModel<StockItem> stockItem, final StockItemModal modal) {
+        super(id, new CompoundPropertyModel<>(stockItem));
 
-        add(this.form = new EditStockItemForm("stockItemForm", stockItem, modal, strategy));
+        add(new EditStockItemForm("stockItemForm"));
 //        this.form.setOutputMarkupId(true);
 //        this.setOutputMarkupId(true);
-        add(new FeedbackPanel("feedback"));
         this.modal = modal;
+        add(new FeedbackPanel("feedback"));
     }
 
-    //TODO workaround? Check in detail...
     protected void onSubmit(AjaxRequestTarget target) {
+        modal.onSubmit(target);
     }
 
-    public final class EditStockItemForm extends BootstrapForm<StockItem>
-    {
+    public final class EditStockItemForm extends BootstrapForm<StockItem> {
 
-        public EditStockItemForm(final String id, IModel<StockItem> stockItem, final StockItemModal modal, final StockItemFormStrategy strategy)
-        {
-            super(id, new CompoundPropertyModel<>(stockItem));
-            
+        public EditStockItemForm(final String id) {
+            super(id);
+
             add(new TextField<>("id").setEnabled(false));
             add(new TextField<>("name"));
             add(new TextField<>("quantity"));
             add(new TextField<>("storageArea"));
-         // Date Picker //
-            DatePicker datePicker = new DatePicker("productionDate", new Options("dateFormat", Options.asString("dd.mm.yy")));
-            datePicker.setRequired(true);
-    		add(datePicker);
+            add(new DatePicker("productionDate", new Options("dateFormat", Options.asString("dd.mm.yy"))).setRequired(true));
             add(new TextField<>("batch"));
 
-            add(new AjaxSubmitLink("submitButton"){
+            add(new AjaxSubmitLink("submitButton") {
                 @Override
-                protected void onSubmit(AjaxRequestTarget target, Form form){
-                    strategy.onSubmit(EditStockItemForm.this.getModelObject());
-                    modal.close(target);
-                    onChanged(target);
+                protected void onSubmit(AjaxRequestTarget target, Form form) {
+                    StockItemPanel.this.onSubmit(target);
                 }
-                
+
                 @Override
                 protected void onError(AjaxRequestTarget target, Form<?> form) {
-                	super.onError(target, form);
+                    super.onError(target, form);
                 }
             });
         }
-
     }
-    
-    protected abstract void onChanged(AjaxRequestTarget target); 
 }

@@ -7,11 +7,11 @@ import java.util.List;
 /**
  * Created by dkraemer on 10.12.15.
  */
-public class NewStockItemFormStrategy implements StockItemFormStrategy{
+public class AddStockItemModalStrategy implements StockItemModalStrategy {
 
     private List<StockItem> itemList;
 
-    public NewStockItemFormStrategy(List<StockItem> itemList){
+    public AddStockItemModalStrategy(List<StockItem> itemList){
         this.itemList = itemList;
     }
 
