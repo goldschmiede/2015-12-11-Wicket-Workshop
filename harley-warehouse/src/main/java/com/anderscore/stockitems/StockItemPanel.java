@@ -39,39 +39,11 @@ public abstract class StockItemPanel extends Panel {
 //        this.setOutputMarkupId(true);
         add(new FeedbackPanel("feedback"));
         this.modal = modal;
-        
-
-//        this.form.add(new AjaxFormSubmitBehavior("submit") {
-//
-//            private static final long serialVersionUID = 1L;
-//
-//            @Override
-//            protected void onError(AjaxRequestTarget target) {
-//                target.add(form);
-//            }
-//
-//            @Override
-//            protected void onSubmit(AjaxRequestTarget target) {
-//                strategy.onSubmit(form.getModelObject());
-//                modal.close(target);
-//                target.add(table);
-//            }
-//            
-//            @Override
-//            protected void updateAjaxAttributes(AjaxRequestAttributes attributes) {
-//            	super.updateAjaxAttributes(attributes);
-//            	attributes.setPreventDefault(true);
-//            }
-//        });
     }
 
     //TODO workaround? Check in detail...
     protected void onSubmit(AjaxRequestTarget target) {
     }
-
-//    public void updateStockItemForm(StockItem stockItem) {
-//        form.setStockItem(stockItem);
-//    }
 
     public final class EditStockItemForm extends BootstrapForm<StockItem>
     {
@@ -84,12 +56,12 @@ public abstract class StockItemPanel extends Panel {
             add(new TextField<>("name"));
             add(new TextField<>("quantity"));
             add(new TextField<>("storageArea"));
-            //add(new TextField<>("productionDate"));
          // Date Picker //
             DatePicker datePicker = new DatePicker("productionDate", new Options("dateFormat", Options.asString("dd.mm.yy")));
             datePicker.setRequired(true);
     		add(datePicker);
             add(new TextField<>("batch"));
+
             add(new AjaxSubmitLink("submitButton"){
                 @Override
                 protected void onSubmit(AjaxRequestTarget target, Form form){
@@ -100,7 +72,6 @@ public abstract class StockItemPanel extends Panel {
                 
                 @Override
                 protected void onError(AjaxRequestTarget target, Form<?> form) {
-//                	target.add(StockItemPanel.this);
                 	super.onError(target, form);
                 }
             });

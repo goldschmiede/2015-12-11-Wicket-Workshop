@@ -16,7 +16,7 @@ public class StockItemModal extends Modal<StockItem> {
 
     private StockItemPanel modalPanel;
 
-    public StockItemModal(String id, IModel<StockItem> stockItem, StockItemFormStrategy strategy, MarkupContainer table) {
+    public StockItemModal(String id, IModel<StockItem> stockItem, StockItemFormStrategy strategy) {
         super(id);
         this.modalPanel = new StockItemPanel("content", stockItem, strategy, this) {
 
@@ -39,13 +39,4 @@ public class StockItemModal extends Modal<StockItem> {
     	target.add(this);
     	return super.show(target);
     }
-
-//    public StockItemModal(String id, StockItemFormStrategy strategy, MarkupContainer table) {
-//        this(id, new StockItem(), strategy, table);
-//    }
-
-//    public void updateContent(AjaxRequestTarget target, StockItem stockItem) {
-//    	target.add(this);
-//        modalPanel.updateStockItemForm(stockItem);
-//    }
 }
