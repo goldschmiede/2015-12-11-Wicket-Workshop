@@ -10,6 +10,11 @@ import java.util.List;
  */
 public interface StockItemDAO extends Serializable {
 
-    List<StockItem> getStockItems();
+    StockItem getById(Long id);
+    void create(StockItem stockItem);
+    void update(StockItem stockItem);
     void delete (StockItem stockItem);
+    List<StockItem> getAll();
+    List<StockItem> getRange(long start, long end);
+    long countAll();
 }

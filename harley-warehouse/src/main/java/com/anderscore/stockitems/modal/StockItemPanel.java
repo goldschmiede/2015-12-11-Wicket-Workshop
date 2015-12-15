@@ -58,6 +58,7 @@ public class StockItemPanel extends Panel {
             add(new AjaxSubmitLink("submitButton") {
                 @Override
                 protected void onSubmit(AjaxRequestTarget target, Form form) {
+                    stockItems.detach();
                     StockItemPanel.this.onSubmit(target);
                 }
 

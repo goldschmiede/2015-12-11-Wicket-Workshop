@@ -2,22 +2,23 @@ package com.anderscore.stockitems;
 
 import java.util.List;
 
+import com.anderscore.model.StockItemsModel;
+import com.anderscore.persistence.PersistenceFacade;
 import com.anderscore.stockitems.modal.AddStockItemModalStrategy;
 import com.anderscore.stockitems.modal.EditStockItemModalStrategy;
 import com.anderscore.stockitems.modal.StockItemModal;
 import com.anderscore.persistence.SimpleStockItemDAO;
 import com.anderscore.persistence.StockItemDAO;
+import de.agilecoders.wicket.core.markup.html.bootstrap.navigation.ajax.BootstrapAjaxPagingNavigator;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.devutils.debugbar.DebugBar;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.list.ListItem;
-import org.apache.wicket.markup.html.list.ListView;
-import org.apache.wicket.markup.html.list.PropertyListView;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.LoadableDetachableModel;
-import org.apache.wicket.model.Model;
-import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.markup.repeater.Item;
+import org.apache.wicket.markup.repeater.data.DataView;
+import org.apache.wicket.markup.repeater.data.ListDataProvider;
+import org.apache.wicket.model.*;
+import org.apache.wicket.model.util.ListModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 import com.anderscore.authenticate.AuthenticatedPage;
@@ -31,19 +32,16 @@ public class StockItemsPage extends AuthenticatedPage {
 
     private static final long serialVersionUID = 6729342242088892987L;
 
-    private final StockItemDAO stockItemDAO;
     private StockItem currentStockItem;
 
     private final WebMarkupContainer stockItemsTable;
-    private final ListView<StockItem> listView;
+    private final DataView<StockItem> dataView;
     private final StockItemModal stockItemModal;
 
 
-    @SuppressWarnings("serial")
     public StockItemsPage(final PageParameters parameters) {
         super(parameters);
 
-        this.stockItemDAO = new SimpleStockItemDAO();
         this.currentStockItem = new StockItem();
 
         add(new DebugBar("debug"));
@@ -53,22 +51,16 @@ public class StockItemsPage extends AuthenticatedPage {
             public void onClick(AjaxRequestTarget target) {
                 currentStockItem = new StockItem();
                 stockItemModal.header(Model.of("Add new stock item"));
-                stockItemModal.setStrategy(new AddStockItemModalStrategy(stockItemDAO.getStockItems()));
+                stockItemModal.setStrategy(new AddStockItemModalStrategy());
                 stockItemModal.show(target);
             }
         });
 
-        IModel<? extends List<StockItem>> items = new LoadableDetachableModel<List<StockItem>>() {
+        this.dataView = new DataView<StockItem>("stockItems", new StockItemDataProvider()) {
 
             @Override
-            protected List<StockItem> load() {
-                return stockItemDAO.getStockItems();
-            }
-        };
-
-        this.listView = new PropertyListView<StockItem>("stockItems", items) {
-            @Override
-            protected void populateItem(final ListItem<StockItem> item) {
+            protected void populateItem(final Item<StockItem> item) {
+                item.setDefaultModel(new CompoundPropertyModel<>(item.getModel()));
                 item.add(new Label("id"));
                 // Wicket stuff
                 // item.add(new Label("name", model(on(item.getModel()).getName())));
@@ -94,19 +86,23 @@ public class StockItemsPage extends AuthenticatedPage {
 
                     @Override
                     public void onClick(AjaxRequestTarget target) {
-                        stockItemDAO.delete(item.getModelObject());
-                        listView.getModel().detach();
+                        PersistenceFacade.getStockItemDAO().delete(item.getModelObject());
                         target.add(stockItemsTable);
                     }
                 });
             }
         };
+
+        dataView.setItemsPerPage(5);
+
         this.stockItemsTable = new WebMarkupContainer("stockItemsTable");
         stockItemsTable.setOutputMarkupId(true);
-        stockItemsTable.add(listView);
+        stockItemsTable.add(dataView);
         add(stockItemsTable);
 
-        add(this.stockItemModal = new StockItemModal("stockItemModal", new PropertyModel<StockItem>(this, "currentStockItem"), items) {
+        add(new BootstrapAjaxPagingNavigator("pagingNavigator", dataView));
+
+        add(this.stockItemModal = new StockItemModal("stockItemModal", new PropertyModel<StockItem>(this, "currentStockItem"), new StockItemsModel()) {
             @Override
             protected void onChanged(AjaxRequestTarget target) {
                 target.add(stockItemsTable);

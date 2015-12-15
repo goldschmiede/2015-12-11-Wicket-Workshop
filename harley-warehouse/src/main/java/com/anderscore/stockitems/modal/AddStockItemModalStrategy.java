@@ -1,6 +1,9 @@
 package com.anderscore.stockitems.modal;
 
 import com.anderscore.model.StockItem;
+import com.anderscore.persistence.PersistenceFacade;
+import com.anderscore.persistence.SimpleStockItemDAO;
+import com.anderscore.persistence.StockItemDAO;
 
 import java.util.List;
 
@@ -9,14 +12,8 @@ import java.util.List;
  */
 public class AddStockItemModalStrategy implements StockItemModalStrategy {
 
-    private List<StockItem> itemList;
-
-    public AddStockItemModalStrategy(List<StockItem> itemList){
-        this.itemList = itemList;
-    }
-
     @Override
     public void onSubmit(StockItem stockItem) {
-        itemList.add(stockItem);
+        PersistenceFacade.getStockItemDAO().create(stockItem);
     }
 }
