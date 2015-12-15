@@ -1,4 +1,4 @@
-package com.anderscore.stockitems;
+package com.anderscore.stockitems.modal;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;

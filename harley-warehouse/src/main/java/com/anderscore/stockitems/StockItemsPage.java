@@ -2,6 +2,11 @@ package com.anderscore.stockitems;
 
 import java.util.List;
 
+import com.anderscore.stockitems.modal.AddStockItemModalStrategy;
+import com.anderscore.stockitems.modal.EditStockItemModalStrategy;
+import com.anderscore.stockitems.modal.StockItemModal;
+import com.anderscore.persistence.SimpleStockItemDAO;
+import com.anderscore.persistence.StockItemDAO;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.devutils.debugbar.DebugBar;
 import org.apache.wicket.markup.html.WebMarkupContainer;

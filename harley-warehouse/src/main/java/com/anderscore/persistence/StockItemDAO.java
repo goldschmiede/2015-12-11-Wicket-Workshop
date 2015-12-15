@@ -1,4 +1,4 @@
-package com.anderscore.stockitems;
+package com.anderscore.persistence;
 
 import com.anderscore.model.StockItem;
 
