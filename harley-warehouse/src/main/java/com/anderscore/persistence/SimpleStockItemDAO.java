@@ -1,11 +1,9 @@
 package com.anderscore.persistence;
 
 import com.anderscore.model.StockItem;
+import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by dkraemer on 14.12.15.
@@ -56,7 +54,9 @@ public class SimpleStockItemDAO implements StockItemDAO {
 
     @Override
     public List<StockItem> getAll() {
-        return STOCK_ITEMS;
+        List<StockItem> stockItems = new ArrayList<>();
+        stockItems.addAll(STOCK_ITEMS);
+        return stockItems;
     }
 
     @Override
@@ -66,6 +66,48 @@ public class SimpleStockItemDAO implements StockItemDAO {
         } else {
             return null;
         }
+    }
+
+    @Override
+    public List<StockItem> getRangeSorted(long start, long end, SortParam<String> sortParam) {
+        List<StockItem> stockItems = new ArrayList<>(STOCK_ITEMS);
+        Comparator comparator = getComparator(sortParam);
+
+        if (comparator != null) {
+            Collections.sort(stockItems, comparator);
+        }
+
+        if (start <= Integer.MAX_VALUE && end <= Integer.MAX_VALUE) {
+            return stockItems.subList((int) start, (int) end);
+        } else {
+            return null;
+        }
+    }
+
+    private Comparator<StockItem> getComparator(SortParam<String> sortParam) {
+        String sortProperty = sortParam.getProperty();
+        boolean ascending = sortParam.isAscending();
+        Comparator comparator = null;
+
+        if ("id".equals(sortProperty)) {
+            comparator = new Comparator<StockItem>() {
+                @Override
+                public int compare(StockItem o1, StockItem o2) {
+                    return o1.getId().compareTo(o2.getId());
+                }
+            };
+        } else if ("name".equals(sortProperty)) {
+            comparator = new Comparator<StockItem>() {
+                @Override
+                public int compare(StockItem o1, StockItem o2) {
+                    return o1.getName().compareTo(o2.getName());
+                }
+            };
+        } else {
+            return null;
+        }
+
+        return ascending ? comparator : comparator.reversed();
     }
 
     @Override

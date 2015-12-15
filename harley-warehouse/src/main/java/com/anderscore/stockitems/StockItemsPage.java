@@ -1,29 +1,26 @@
 package com.anderscore.stockitems;
 
-import java.util.List;
-
+import com.anderscore.authenticate.AuthenticatedPage;
+import com.anderscore.model.StockItem;
 import com.anderscore.model.StockItemsModel;
 import com.anderscore.persistence.PersistenceFacade;
 import com.anderscore.stockitems.modal.AddStockItemModalStrategy;
 import com.anderscore.stockitems.modal.EditStockItemModalStrategy;
 import com.anderscore.stockitems.modal.StockItemModal;
-import com.anderscore.persistence.SimpleStockItemDAO;
-import com.anderscore.persistence.StockItemDAO;
+import com.googlecode.wicket.jquery.ui.markup.html.link.AjaxLink;
 import de.agilecoders.wicket.core.markup.html.bootstrap.navigation.ajax.BootstrapAjaxPagingNavigator;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.devutils.debugbar.DebugBar;
+import org.apache.wicket.extensions.markup.html.repeater.data.sort.ISortStateLocator;
+import org.apache.wicket.extensions.markup.html.repeater.data.sort.OrderByBorder;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
-import org.apache.wicket.markup.repeater.data.ListDataProvider;
-import org.apache.wicket.model.*;
-import org.apache.wicket.model.util.ListModel;
+import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
-
-import com.anderscore.authenticate.AuthenticatedPage;
-import com.anderscore.model.StockItem;
-import com.googlecode.wicket.jquery.ui.markup.html.link.AjaxLink;
 
 /**
  * Created by pmoebius on 07.12.2015.
@@ -31,12 +28,10 @@ import com.googlecode.wicket.jquery.ui.markup.html.link.AjaxLink;
 public class StockItemsPage extends AuthenticatedPage {
 
     private static final long serialVersionUID = 6729342242088892987L;
-
-    private StockItem currentStockItem;
-
     private final WebMarkupContainer stockItemsTable;
     private final DataView<StockItem> dataView;
     private final StockItemModal stockItemModal;
+    private StockItem currentStockItem;
 
 
     public StockItemsPage(final PageParameters parameters) {
@@ -56,7 +51,9 @@ public class StockItemsPage extends AuthenticatedPage {
             }
         });
 
-        this.dataView = new DataView<StockItem>("stockItems", new StockItemDataProvider()) {
+        SortableStockItemDataProvider stockItemDataProvider = new SortableStockItemDataProvider();
+
+        this.dataView = new DataView<StockItem>("stockItems", stockItemDataProvider) {
 
             @Override
             protected void populateItem(final Item<StockItem> item) {
@@ -96,8 +93,13 @@ public class StockItemsPage extends AuthenticatedPage {
         dataView.setItemsPerPage(5);
 
         this.stockItemsTable = new WebMarkupContainer("stockItemsTable");
+
         stockItemsTable.setOutputMarkupId(true);
         stockItemsTable.add(dataView);
+
+        stockItemsTable.add(createOrderByBorder("id", stockItemDataProvider));
+        stockItemsTable.add(createOrderByBorder("name", stockItemDataProvider));
+
         add(stockItemsTable);
 
         add(new BootstrapAjaxPagingNavigator("pagingNavigator", dataView));
@@ -108,5 +110,17 @@ public class StockItemsPage extends AuthenticatedPage {
                 target.add(stockItemsTable);
             }
         });
+    }
+
+    private OrderByBorder<String> createOrderByBorder(String property, ISortStateLocator<String> sortStateLocator) {
+        String wicketId = "orderBy" + property.substring(0, 1).toUpperCase() + property.substring(1);
+        return new OrderByBorder<String>(wicketId, property, sortStateLocator) {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            protected void onSortChanged() {
+                dataView.setCurrentPage(0);
+            }
+        };
     }
 }

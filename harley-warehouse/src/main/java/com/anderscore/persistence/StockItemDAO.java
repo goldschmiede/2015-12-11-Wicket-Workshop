@@ -1,6 +1,7 @@
 package com.anderscore.persistence;
 
 import com.anderscore.model.StockItem;
+import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
 
 import java.io.Serializable;
 import java.util.List;
@@ -16,5 +17,6 @@ public interface StockItemDAO extends Serializable {
     void delete (StockItem stockItem);
     List<StockItem> getAll();
     List<StockItem> getRange(long start, long end);
+    List<StockItem> getRangeSorted(long start, long end, SortParam<String> sortParam);
     long countAll();
 }
