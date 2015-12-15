@@ -8,6 +8,8 @@ import com.anderscore.model.StockItem;
 
 import de.agilecoders.wicket.core.markup.html.bootstrap.dialog.Modal;
 
+import java.util.List;
+
 /**
  * Created by pmoebius on 09.12.2015.
  */
@@ -15,15 +17,15 @@ public class StockItemModal extends Modal<StockItem> {
 
     private StockItemModalStrategy strategy;
 
-    public StockItemModal(String id, IModel<StockItem> stockItem, StockItemModalStrategy strategy) {
+    public StockItemModal(final String id, final IModel<StockItem> stockItem, IModel<? extends List<StockItem>> stockItems, StockItemModalStrategy strategy) {
         super(id, stockItem);
 
         this.strategy = strategy;
-        add(new StockItemPanel("content", stockItem, this));
+        add(new StockItemPanel("content", stockItem, stockItems, this));
     }
 
-    public StockItemModal(String id, IModel<StockItem> stockItem) {
-        this(id, stockItem, StockItemModalStrategy.NOOP);
+    public StockItemModal(final String id, final IModel<StockItem> stockItem, final IModel<? extends List<StockItem>> stockItems) {
+        this(id, stockItem, stockItems, StockItemModalStrategy.NOOP);
     }
 
     protected void onSubmit(AjaxRequestTarget target){

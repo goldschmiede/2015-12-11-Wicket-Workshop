@@ -49,17 +49,19 @@
                 <input wicket:id="batch" type="text" class="form-control">
             </div>
         </div>
-        <!--        <div class="form-group">
-                    <wicket:fragment wicket:id="select">
-                        <label wicket:for="state">Select picker:</label>
 
-                        <div class="controls">
+        <div class="form-group">
+            <label wicket:for="relatedStockItems">Related stock items:</label>
 
-                            <select wicket:id="state" class="form-control">
-                            </select>
-                        </div>
-                    </wicket:fragment>
-                </div>-->
+            <div class="controls">
+                <select multiple="multiple" wicket:id="relatedStockItems" class="form-control">
+                    <option>StockItem1</option>
+                    <option>StockItem2</option>
+                    <option>StockItem3</option>
+                </select>
+            </div>
+        </div>
+
         <button wicket:id="submitButton" class="btn btn-main">Submit</button>
     </form>
 

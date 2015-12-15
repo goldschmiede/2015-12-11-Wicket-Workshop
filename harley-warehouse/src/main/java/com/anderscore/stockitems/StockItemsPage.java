@@ -106,7 +106,7 @@ public class StockItemsPage extends AuthenticatedPage {
         stockItemsTable.add(listView);
         add(stockItemsTable);
 
-        add(this.stockItemModal = new StockItemModal("stockItemModal", new PropertyModel<StockItem>(this, "currentStockItem")) {
+        add(this.stockItemModal = new StockItemModal("stockItemModal", new PropertyModel<StockItem>(this, "currentStockItem"), items) {
             @Override
             protected void onChanged(AjaxRequestTarget target) {
                 target.add(stockItemsTable);
