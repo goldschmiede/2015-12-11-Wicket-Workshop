@@ -16,6 +16,7 @@ import com.googlecode.wicket.jquery.core.Options;
 import com.googlecode.wicket.jquery.ui.form.datepicker.DatePicker;
 
 import de.agilecoders.wicket.core.markup.html.bootstrap.form.BootstrapForm;
+import org.apache.wicket.validation.validator.StringValidator;
 
 import java.util.List;
 
@@ -47,11 +48,11 @@ public class StockItemPanel extends Panel {
             super(id);
 
             add(new TextField<>("id").setEnabled(false));
-            add(new TextField<>("name"));
-            add(new TextField<>("quantity"));
-            add(new TextField<>("storageArea"));
+            add(new TextField<>("name").setRequired(true).add(new StringValidator(1, 30)));
+            add(new TextField<>("quantity").setRequired(true));
+            add(new TextField<>("storageArea").setRequired(true));
             add(new DatePicker("productionDate", new Options("dateFormat", Options.asString("dd.mm.yy"))).setRequired(true));
-            add(new TextField<>("batch"));
+            add(new TextField<>("batch").setRequired(true));
             add(new ListMultipleChoice<>("relatedStockItems", stockItems));
 
             add(new AjaxSubmitLink("submitButton") {
