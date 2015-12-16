@@ -1,6 +1,7 @@
 package com.anderscore.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -18,6 +19,22 @@ public class StockItem implements Serializable {
     private String batch;
     private List<StockItem> relatedStockItems;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        StockItem stockItem = (StockItem) o;
+
+        return id != null ? id.equals(stockItem.id) : stockItem.id == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
+    }
+
     /**
      * default constructor for creating a new stockitem with generated id and default values
      */
@@ -26,7 +43,7 @@ public class StockItem implements Serializable {
     }
 
     public StockItem(Long id, String name, Integer quantity, String storageArea, Date productionDate, String batch) {
-        this(id, name, quantity, storageArea, productionDate, batch, null);
+        this(id, name, quantity, storageArea, productionDate, batch, new ArrayList<StockItem>());
     }
 
     public StockItem(Long id, String name, Integer quantity, String storageArea, Date productionDate, String batch, List<StockItem> relatedStockItems) {
@@ -36,7 +53,7 @@ public class StockItem implements Serializable {
         this.storageArea = storageArea;
         this.productionDate = productionDate;
         this.batch = batch;
-        this.relatedStockItems = relatedStockItems;
+        this.relatedStockItems = relatedStockItems != null ? relatedStockItems : new ArrayList<StockItem>();
     }
 
     public Long getId() {
