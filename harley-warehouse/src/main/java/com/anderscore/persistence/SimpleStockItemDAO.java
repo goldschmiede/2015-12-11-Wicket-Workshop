@@ -87,25 +87,54 @@ public class SimpleStockItemDAO implements StockItemDAO {
     private Comparator<StockItem> getComparator(SortParam<String> sortParam) {
         String sortProperty = sortParam.getProperty();
         boolean ascending = sortParam.isAscending();
-        Comparator comparator = null;
+		Comparator comparator = null;
 
-        if ("id".equals(sortProperty)) {
-            comparator = new Comparator<StockItem>() {
-                @Override
-                public int compare(StockItem o1, StockItem o2) {
-                    return o1.getId().compareTo(o2.getId());
-                }
-            };
-        } else if ("name".equals(sortProperty)) {
-            comparator = new Comparator<StockItem>() {
-                @Override
-                public int compare(StockItem o1, StockItem o2) {
-                    return o1.getName().compareTo(o2.getName());
-                }
-            };
-        } else {
-            return null;
-        }
+		if ("id".equals(sortProperty)) {
+			comparator = new Comparator<StockItem>() {
+				@Override
+				public int compare(StockItem o1, StockItem o2) {
+					return o1.getId().compareTo(o2.getId());
+				}
+			};
+		} else if ("name".equals(sortProperty)) {
+			comparator = new Comparator<StockItem>() {
+				@Override
+				public int compare(StockItem o1, StockItem o2) {
+					return o1.getName().compareTo(o2.getName());
+				}
+			};
+		} else if ("quantity".equals(sortProperty)) {
+			comparator = new Comparator<StockItem>() {
+				@Override
+				public int compare(StockItem o1, StockItem o2) {
+					return o1.getQuantity().compareTo(o2.getQuantity());
+				}
+			};
+		} else if ("storageArea".equals(sortProperty)) {
+			comparator = new Comparator<StockItem>() {
+				@Override
+				public int compare(StockItem o1, StockItem o2) {
+					return o1.getStorageArea().compareTo(o2.getStorageArea());
+				}
+			};
+		} else if ("productionDate".equals(sortProperty)) {
+			comparator = new Comparator<StockItem>() {
+				@Override
+				public int compare(StockItem o1, StockItem o2) {
+					return o1.getProductionDate().compareTo(o2.getProductionDate());
+				}
+			};
+		} else if ("batch".equals(sortProperty)) {
+			comparator = new Comparator<StockItem>() {
+				@Override
+				public int compare(StockItem o1, StockItem o2) {
+					return o1.getBatch().compareTo(o2.getBatch());
+				}
+			};
+			
+		} else {
+			return null;
+		}
 
         return ascending ? comparator : comparator.reversed();
     }

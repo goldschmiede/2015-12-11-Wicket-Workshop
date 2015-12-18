@@ -99,6 +99,10 @@ public class StockItemsPage extends AuthenticatedPage {
 
         stockItemsTable.add(createOrderByBorder("id", stockItemDataProvider));
         stockItemsTable.add(createOrderByBorder("name", stockItemDataProvider));
+        stockItemsTable.add(createOrderByBorder("quantity", stockItemDataProvider));
+        stockItemsTable.add(createOrderByBorder("storageArea", stockItemDataProvider));
+        stockItemsTable.add(createOrderByBorder("productionDate", stockItemDataProvider));
+        stockItemsTable.add(createOrderByBorder("batch", stockItemDataProvider));
 
         add(stockItemsTable);
 
