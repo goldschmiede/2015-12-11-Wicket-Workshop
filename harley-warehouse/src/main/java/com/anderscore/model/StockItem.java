@@ -1,5 +1,8 @@
 package com.anderscore.model;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Transient;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -9,14 +12,17 @@ import java.util.Random;
 /**
  * Created by pmoebius on 07.12.2015.
  */
+@Entity
 public class StockItem implements Serializable {
 
+    @Id
     private Long id;
     private String name;
     private Integer quantity;
     private String storageArea;
     private Date productionDate;
     private String batch;
+    @Transient
     private List<StockItem> relatedStockItems;
 
     @Override
@@ -39,7 +45,7 @@ public class StockItem implements Serializable {
      * default constructor for creating a new stockitem with generated id and default values
      */
     public StockItem() {
-        this(Long.valueOf(new Random().nextInt(9999)), "", 1, "", new Date(), "", null);
+        this((long) new Random().nextInt(9999), "", 1, "", new Date(), "", null);
     }
 
     public StockItem(Long id, String name, Integer quantity, String storageArea, Date productionDate, String batch) {

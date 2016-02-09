@@ -5,7 +5,7 @@ package com.anderscore.persistence;
  */
 public class PersistenceFacade {
 
-    private static final StockItemDAO STOCK_ITEM_DAO = new SimpleStockItemDAO();
+    private static final StockItemDAO STOCK_ITEM_DAO = new HibernateStockItemDAO();
 
     public static StockItemDAO getStockItemDAO(){
         return STOCK_ITEM_DAO;
