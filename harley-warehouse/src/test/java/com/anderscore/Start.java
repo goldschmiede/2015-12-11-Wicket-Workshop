@@ -32,7 +32,6 @@ public class Start
 	public static void main(String[] args)
 	{
 		System.setProperty("wicket.configuration", "development");
-		startDatabase();
 		Server server = new Server();
 
 		HttpConfiguration http_config = new HttpConfiguration();
@@ -102,23 +101,5 @@ public class Start
 			e.printStackTrace();
 			System.exit(100);
 		}
-	}
-
-
-	public static void startDatabase() {
-		HsqlProperties hsqlProperties = new HsqlProperties();
-		hsqlProperties.setProperty("server.database.0", "file:target\\db\\harley-warehouse");
-		hsqlProperties.setProperty("server.dbname.0","testdb");
-
-		org.hsqldb.Server server = new org.hsqldb.Server();
-		try {
-			server.setProperties(hsqlProperties);
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (ServerAcl.AclFormatException e) {
-			e.printStackTrace();
-		}
-		server.setTrace(true);
-		server.start();
 	}
 }
